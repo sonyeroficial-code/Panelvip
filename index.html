@@ -698,6 +698,89 @@ body:not(.loggedOut) #adminCard.linkGeneratorCard{
 }
 
 
+
+/* Cambio seguro de celular mediante actualización de contraseña */
+.deviceResetOverlay{
+  position:fixed;
+  inset:0;
+  z-index:160;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:
+    radial-gradient(circle at top,rgba(123,60,255,.22),transparent 38%),
+    rgba(3,6,18,.94);
+  backdrop-filter:blur(16px);
+}
+.deviceResetOverlay.show{display:flex;animation:deviceResetIn .22s ease-out}
+.deviceResetCard{
+  width:min(390px,100%);
+  max-height:92vh;
+  overflow:auto;
+  padding:22px 18px 18px;
+  border-radius:28px;
+  background:linear-gradient(180deg,rgba(17,24,56,.98),rgba(7,11,29,.99));
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:0 28px 80px rgba(0,0,0,.55),0 0 0 1px rgba(123,60,255,.08) inset;
+}
+.deviceResetIcon{
+  width:58px;
+  height:58px;
+  margin:0 auto 13px;
+  border-radius:20px;
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  background:linear-gradient(145deg,#7b3cff,#2f62ff);
+  box-shadow:0 13px 30px rgba(47,98,255,.25);
+}
+.deviceResetTitle{margin:0;text-align:center;font-size:22px;line-height:1.15;color:#fff}
+.deviceResetText{margin:9px auto 15px;max-width:330px;text-align:center;color:#b9c2d8;font-size:12px;line-height:1.45}
+.deviceResetAccount{
+  margin-bottom:14px;
+  padding:11px 12px;
+  border-radius:16px;
+  background:rgba(47,98,255,.10);
+  border:1px solid rgba(123,60,255,.20);
+}
+.deviceResetAccount span{display:block;color:#aeb6ca;font-size:10.5px;font-weight:900;margin-bottom:4px}
+.deviceResetAccount strong{display:block;color:#fff;font-size:13px;word-break:break-all}
+.deviceResetCard label{font-size:12px;margin-bottom:7px;color:#eef2ff}
+.deviceResetCard input{
+  height:48px;
+  border-radius:17px;
+  padding:0 15px;
+  font-size:14px;
+  background:rgba(4,8,24,.94);
+}
+.deviceResetHint{margin:-3px 2px 12px;color:#929bb4;font-size:10.8px;line-height:1.35}
+.deviceResetError{
+  display:none;
+  margin:2px 0 11px;
+  padding:10px 11px;
+  border-radius:14px;
+  color:#ffd8d8;
+  background:rgba(239,68,68,.11);
+  border:1px solid rgba(239,68,68,.24);
+  font-size:11.5px;
+  line-height:1.35;
+}
+.deviceResetError.show{display:block}
+.deviceResetActions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:5px}
+.deviceResetActions button{min-height:48px;border-radius:17px;font-size:13px}
+.deviceResetCancel{background:rgba(255,255,255,.055)}
+body.deviceResetActive{overflow:hidden}
+body.deviceResetActive .installBanner,
+body.deviceResetActive .bellPanel,
+body.deviceResetActive .settingsOverlay{display:none!important}
+@keyframes deviceResetIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:430px){
+  .deviceResetOverlay{padding:14px}
+  .deviceResetCard{padding:20px 15px 16px;border-radius:25px}
+  .deviceResetTitle{font-size:20px}
+}
+
 /* Corrección de botones Configuración y Actualizar */
 .settingsBtn{
   pointer-events:auto!important;
@@ -846,6 +929,40 @@ body:not(.loggedOut) #adminCard.linkGeneratorCard{
   </div>
 </div>
 
+
+<div class="deviceResetOverlay" id="deviceResetOverlay" aria-hidden="true">
+  <div class="deviceResetCard" role="dialog" aria-modal="true" aria-labelledby="deviceResetTitle">
+    <div class="deviceResetIcon">📱</div>
+    <h2 class="deviceResetTitle" id="deviceResetTitle">Autorizar este celular</h2>
+    <p class="deviceResetText">La cuenta está vinculada a otro dispositivo. Para confirmar que eres el dueño, crea una contraseña nueva y este celular reemplazará al anterior.</p>
+
+    <div class="deviceResetAccount">
+      <span>Cuenta validada</span>
+      <strong id="deviceResetEmail">---</strong>
+    </div>
+
+    <div class="field hidden" id="deviceResetCurrentField">
+      <label for="deviceResetCurrentPassword">Contraseña actual</label>
+      <input id="deviceResetCurrentPassword" type="password" autocomplete="current-password" placeholder="Escribe tu contraseña actual">
+    </div>
+    <div class="field">
+      <label for="deviceResetNewPassword">Nueva contraseña</label>
+      <input id="deviceResetNewPassword" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+    </div>
+    <div class="field">
+      <label for="deviceResetConfirmPassword">Confirmar contraseña nueva</label>
+      <input id="deviceResetConfirmPassword" type="password" autocomplete="new-password" placeholder="Repite la contraseña nueva">
+    </div>
+    <div class="deviceResetHint">Al confirmar, el ID de este celular quedará autorizado y el teléfono anterior perderá el acceso.</div>
+    <div class="deviceResetError" id="deviceResetError"></div>
+
+    <div class="deviceResetActions">
+      <button class="primary" id="deviceResetConfirmBtn" type="button">Cambiar contraseña y autorizar</button>
+      <button class="deviceResetCancel" id="deviceResetCancelBtn" type="button">Cancelar y salir</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <div class="dialogOverlay" id="dialogOverlay">
   <div class="dialogCard" id="dialogCard">
@@ -864,7 +981,7 @@ body:not(.loggedOut) #adminCard.linkGeneratorCard{
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { getFirestore, collection, query, onSnapshot, doc, getDoc, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -882,6 +999,11 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 let photos = [], token = "", unsub = null, toastTimer = null;
+let loginPasswordTemporal = "";
+let usuarioPendienteCambio = null;
+let deviceLockUnsub = null;
+let ignorarVigilanciaDispositivo = false;
+let cambioDispositivoProcesando = false;
 
 
 const splashStartedAt = Date.now();
@@ -1309,19 +1431,175 @@ function getPanelDeviceId(){
   return id;
 }
 
-async function validarCelularUnico(user){
-  const deviceId = getPanelDeviceId();
-  const lockRef = doc(db, "deviceLocks", user.uid);
-  const snap = await getDoc(lockRef);
-  const info = {
+function crearInfoDispositivo(user){
+  return {
     email: user.email || "",
-    deviceId,
+    deviceId: getPanelDeviceId(),
     ultimoIngreso: serverTimestamp(),
     navegador: navigator.userAgent || "",
     idioma: navigator.language || "",
     pantalla: `${screen.width}x${screen.height}`,
     zona: Intl.DateTimeFormat().resolvedOptions().timeZone || ""
   };
+}
+
+function mostrarErrorCambioDispositivo(message=""){
+  const box = $("deviceResetError");
+  box.textContent = message;
+  box.classList.toggle("show", !!message);
+}
+
+function abrirCambioDispositivo(user){
+  usuarioPendienteCambio = user;
+  $("deviceResetEmail").textContent = user.email || "Usuario";
+  $("deviceResetNewPassword").value = "";
+  $("deviceResetConfirmPassword").value = "";
+  $("deviceResetCurrentPassword").value = "";
+  $("deviceResetCurrentField").classList.toggle("hidden", !!loginPasswordTemporal);
+  mostrarErrorCambioDispositivo("");
+  $("deviceResetOverlay").classList.add("show");
+  $("deviceResetOverlay").setAttribute("aria-hidden", "false");
+  document.body.classList.add("deviceResetActive", "loggedOut");
+  $("authCard").classList.add("hidden");
+  setTimeout(()=>{
+    const target = loginPasswordTemporal ? $("deviceResetNewPassword") : $("deviceResetCurrentPassword");
+    target?.focus();
+  }, 120);
+}
+
+function cerrarCambioDispositivo(){
+  $("deviceResetOverlay").classList.remove("show");
+  $("deviceResetOverlay").setAttribute("aria-hidden", "true");
+  document.body.classList.remove("deviceResetActive");
+  mostrarErrorCambioDispositivo("");
+  $("deviceResetCurrentPassword").value = "";
+  $("deviceResetNewPassword").value = "";
+  $("deviceResetConfirmPassword").value = "";
+  usuarioPendienteCambio = null;
+}
+
+function mensajeErrorCambioDispositivo(error){
+  const code = error?.code || "";
+  if(code.includes("wrong-password") || code.includes("invalid-credential")) return "La contraseña actual no es correcta.";
+  if(code.includes("weak-password")) return "La contraseña nueva debe tener al menos 6 caracteres.";
+  if(code.includes("requires-recent-login")) return "Por seguridad, vuelve a iniciar sesión e inténtalo otra vez.";
+  if(code.includes("network-request-failed")) return "No hay conexión. Revisa tu internet e inténtalo nuevamente.";
+  if(code.includes("permission-denied")) return "Firebase no permitió actualizar el celular. Revisa las reglas de Firestore.";
+  return "No se pudo autorizar este celular. Inténtalo nuevamente.";
+}
+
+async function confirmarCambioDispositivo(){
+  if(cambioDispositivoProcesando) return;
+  const user = usuarioPendienteCambio || auth.currentUser;
+  if(!user?.email){
+    mostrarErrorCambioDispositivo("La sesión ya no está disponible. Vuelve a iniciar sesión.");
+    return;
+  }
+
+  const actual = loginPasswordTemporal || $("deviceResetCurrentPassword").value;
+  const nueva = $("deviceResetNewPassword").value;
+  const confirmar = $("deviceResetConfirmPassword").value;
+
+  if(!actual){
+    $("deviceResetCurrentField").classList.remove("hidden");
+    mostrarErrorCambioDispositivo("Escribe tu contraseña actual para verificar la cuenta.");
+    $("deviceResetCurrentPassword").focus();
+    return;
+  }
+  if(nueva.length < 6){
+    mostrarErrorCambioDispositivo("La contraseña nueva debe tener al menos 6 caracteres.");
+    $("deviceResetNewPassword").focus();
+    return;
+  }
+  if(nueva !== confirmar){
+    mostrarErrorCambioDispositivo("Las contraseñas nuevas no coinciden.");
+    $("deviceResetConfirmPassword").focus();
+    return;
+  }
+  if(nueva === actual){
+    mostrarErrorCambioDispositivo("La contraseña nueva debe ser diferente a la contraseña actual.");
+    $("deviceResetNewPassword").focus();
+    return;
+  }
+
+  cambioDispositivoProcesando = true;
+  const btn = $("deviceResetConfirmBtn");
+  btn.disabled = true;
+  btn.textContent = "Autorizando...";
+  mostrarErrorCambioDispositivo("");
+
+  try{
+    const credential = EmailAuthProvider.credential(user.email, actual);
+    await reauthenticateWithCredential(user, credential);
+    await updatePassword(user, nueva);
+
+    ignorarVigilanciaDispositivo = true;
+    await setDoc(doc(db, "deviceLocks", user.uid), {
+      ...crearInfoDispositivo(user),
+      fechaRegistro: serverTimestamp(),
+      fechaCambioDispositivo: serverTimestamp(),
+      cambioConfirmadoConPassword: true
+    }, { merge:false });
+
+    loginPasswordTemporal = "";
+    cerrarCambioDispositivo();
+    document.body.classList.remove("loggedOut");
+    setSplash("Celular autorizado", "Preparando tu panel en este dispositivo");
+    await habilitarPanel(user);
+    showToast("Contraseña cambiada y celular autorizado.");
+  }catch(error){
+    console.error(error);
+    ignorarVigilanciaDispositivo = false;
+    mostrarErrorCambioDispositivo(mensajeErrorCambioDispositivo(error));
+  }finally{
+    cambioDispositivoProcesando = false;
+    btn.disabled = false;
+    btn.textContent = "Cambiar contraseña y autorizar";
+  }
+}
+
+async function cancelarCambioDispositivo(){
+  if(cambioDispositivoProcesando) return;
+  loginPasswordTemporal = "";
+  cerrarCambioDispositivo();
+  await signOut(auth).catch(()=>{});
+}
+
+function detenerVigilanciaDispositivo(){
+  if(deviceLockUnsub){
+    deviceLockUnsub();
+    deviceLockUnsub = null;
+  }
+}
+
+function vigilarCelularAutorizado(user){
+  detenerVigilanciaDispositivo();
+  const deviceId = getPanelDeviceId();
+  deviceLockUnsub = onSnapshot(doc(db, "deviceLocks", user.uid), async snap=>{
+    if(ignorarVigilanciaDispositivo){
+      ignorarVigilanciaDispositivo = false;
+      return;
+    }
+    const data = snap.exists() ? (snap.data() || {}) : null;
+    if(!data || data.deviceId !== deviceId){
+      detenerVigilanciaDispositivo();
+      await showDialog({
+        title:"Acceso transferido",
+        message:"Esta cuenta fue autorizada en <strong>otro celular</strong>. Por seguridad, este dispositivo cerrará la sesión.",
+        confirmText:"Entendido",
+        showCancel:false,
+        tone:"warning",
+        note:"Solo puede permanecer autorizado un celular a la vez."
+      });
+      await signOut(auth).catch(()=>{});
+    }
+  }, error=>console.error("No se pudo vigilar el celular autorizado:", error));
+}
+
+async function validarCelularUnico(user){
+  const lockRef = doc(db, "deviceLocks", user.uid);
+  const snap = await getDoc(lockRef);
+  const info = crearInfoDispositivo(user);
 
   if(!snap.exists()){
     await setDoc(lockRef, {
@@ -1332,17 +1610,9 @@ async function validarCelularUnico(user){
   }
 
   const data = snap.data() || {};
-  if(data.deviceId !== deviceId){
+  if(data.deviceId !== info.deviceId){
     hideSplash();
-    await showDialog({
-      title:"Celular no autorizado",
-      message:"Este panel <strong>ya está vinculado a otro celular</strong>.<br><br>Para usar este equipo, entra al celular autorizado y toca <strong>Resetear celular autorizado</strong>.",
-      confirmText:"Entendido",
-      showCancel:false,
-      tone:"danger",
-      note:"Así la cuenta solo abre en un celular."
-    });
-    await signOut(auth);
+    abrirCambioDispositivo(user);
     return false;
   }
 
@@ -1363,6 +1633,8 @@ async function resetearCelularAutorizado(){
   });
   if(!ok) return;
   try{
+    ignorarVigilanciaDispositivo = true;
+    detenerVigilanciaDispositivo();
     await deleteDoc(doc(db, "deviceLocks", user.uid));
     localStorage.removeItem("panel_device_id");
     showToast("Celular autorizado reseteado.");
@@ -1452,9 +1724,35 @@ function exportCSV(){
   const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n"); const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="fotos_panel.csv";a.click();URL.revokeObjectURL(a.href);
 }
 
+async function habilitarPanel(user){
+  document.body.classList.remove("loggedOut", "deviceResetActive");
+  $("deviceResetOverlay").classList.remove("show");
+  $("authCard").classList.add("hidden");
+  $("adminCard").classList.remove("hidden");
+  $("tools").classList.remove("hidden");
+  $("stats").classList.remove("hidden");
+  $("userLabel").textContent="Dueño sonyer · "+user.email;
+  $("emailShow").textContent=user.email;
+  $("uidShow").textContent="UID: "+user.uid;
+  $("avatar").textContent=(user.email||"S").slice(0,1).toUpperCase();
+  $("settingsBtn").classList.remove("hidden");
+  $("settingsEmail").textContent=user.email||"Usuario";
+  $("settingsEmail2").textContent=user.email||"Usuario";
+  $("settingsUid").textContent=user.uid||"---";
+  $("settingsAvatar").textContent=(user.email||"S").slice(0,1).toUpperCase();
+
+  await ensureToken(user).catch(e=>{
+    console.error(e);
+    showToast("No se pudo generar token.","error");
+  });
+  startLive();
+  vigilarCelularAutorizado(user);
+  loginPasswordTemporal = "";
+  hideSplash();
+}
+
 onAuthStateChanged(auth,async user=>{
   if(user){
-    document.body.classList.remove("loggedOut");
     setSplash("Validando acceso...", "Cargando tu acceso de forma segura");
     const permitido = await validarCelularUnico(user).catch(e=>{
       console.error(e);
@@ -1463,31 +1761,17 @@ onAuthStateChanged(auth,async user=>{
       return false;
     });
     if(!permitido){
-      hideSplash();
+      $("adminCard").classList.add("hidden");
+      $("tools").classList.add("hidden");
+      $("stats").classList.add("hidden");
       return;
     }
-
-    $("authCard").classList.add("hidden");
-    $("adminCard").classList.remove("hidden");
-    $("tools").classList.remove("hidden");
-    $("stats").classList.remove("hidden");
-    $("userLabel").textContent="Dueño sonyer · "+user.email;
-    $("emailShow").textContent=user.email;
-    $("uidShow").textContent="UID: "+user.uid;
-    $("avatar").textContent=(user.email||"S").slice(0,1).toUpperCase();
-    $("settingsBtn").classList.remove("hidden");
-    $("settingsEmail").textContent=user.email||"Usuario";
-    $("settingsEmail2").textContent=user.email||"Usuario";
-    $("settingsUid").textContent=user.uid||"---";
-    $("settingsAvatar").textContent=(user.email||"S").slice(0,1).toUpperCase();
-
-    await ensureToken(user).catch(e=>{
-      console.error(e);
-      showToast("No se pudo generar token.","error");
-    });
-    startLive();
-    hideSplash();
+    await habilitarPanel(user);
   } else {
+    detenerVigilanciaDispositivo();
+    cerrarCambioDispositivo();
+    loginPasswordTemporal = "";
+    ignorarVigilanciaDispositivo = false;
     document.body.classList.add("loggedOut");
     if(unsub)unsub();
     $("authCard").classList.remove("hidden");
@@ -1511,9 +1795,11 @@ onAuthStateChanged(auth,async user=>{
 $("loginBtn").addEventListener("click",async()=>{
   try{
     setAuthLoading(true);
+    loginPasswordTemporal = $("password").value;
     setSplash("Validando acceso...", "Cargando tu acceso de forma segura");
-    await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);
+    await signInWithEmailAndPassword(auth,$("email").value.trim(),loginPasswordTemporal);
   }catch(e){
+    loginPasswordTemporal = "";
     hideSplash();
     showToast("No tienes acceso para ingresar.","error");
   }finally{
@@ -1531,6 +1817,11 @@ $("registerBtn").addEventListener("click",async()=>{
   }finally{
     setAuthLoading(false);
   }
+});
+$("deviceResetConfirmBtn").addEventListener("click",confirmarCambioDispositivo);
+$("deviceResetCancelBtn").addEventListener("click",cancelarCambioDispositivo);
+[$("deviceResetCurrentPassword"),$("deviceResetNewPassword"),$("deviceResetConfirmPassword")].forEach(input=>{
+  input.addEventListener("keydown",e=>{ if(e.key==="Enter") confirmarCambioDispositivo(); });
 });
 $("logoutBtn").addEventListener("click",()=>signOut(auth)); $("generateBtn").addEventListener("click",async()=>{if(auth.currentUser){await ensureToken(auth.currentUser);startLive();showToast("Link generado.");}});
 if($("resetDeviceBtn")) $("resetDeviceBtn").addEventListener("click",resetearCelularAutorizado);
