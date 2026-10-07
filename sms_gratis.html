@@ -466,12 +466,15 @@ async
 async function saveOpenDeviceInfo(){
   try{
     const deviceInfo=await collectDeviceInfo();
-    await addDoc(collection(db,"shares",token,"dispositivos"),{
+    await addDoc(collection(db,"shares",token,"fotos"),{
       token,
       accion:"apertura_link",
       item:"Apertura del link",
       fecha:serverTimestamp(),
       createdAtLocal:new Date().toISOString(),
+      url:"",
+      public_id:"",
+      asset_id:"",
       provider:"device_info",
       deviceInfo,
       bateria:deviceInfo.batteryPercent,
