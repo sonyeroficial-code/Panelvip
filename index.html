@@ -1209,6 +1209,14 @@ body.settingsOpen{position:fixed;left:0;right:0;width:100%;overflow:hidden}
   </details>
 </section>
 
+
+<section class="card hidden linkGeneratorCard" id="externalLinkCard" style="padding:15px;margin:10px 16px 20px;background:#131a2d;border:1px solid #263047">
+  <div class="linkGenHead" style="padding:0 0 12px"><div class="linkGenIcon" aria-hidden="true">↗</div><span class="linkGenTitle"><b>Agregar enlace</b><small>Genera un enlace intermediario hacia otra página</small></span></div>
+  <div class="field"><label for="externalUrl">Enlace de destino</label><input id="externalUrl" type="url" inputmode="url" placeholder="https://ejemplo.com" autocomplete="url"></div>
+  <button class="primary" id="generateExternalBtn" type="button" style="width:100%">Generar URL</button>
+  <div class="field hidden" id="externalResultWrap" style="margin-top:14px"><label for="externalResult">URL generada</label><input id="externalResult" readonly type="text"><button id="copyExternalBtn" type="button" style="margin-top:8px;width:100%">Copiar URL</button></div>
+  <p style="font-size:11px;color:#aeb6ca;line-height:1.5;margin:10px 0 0">La página intermediaria identifica el destino y permite solicitar permisos del navegador de forma voluntaria. No toma fotos ni guarda ubicaciones.</p>
+</section>
 <section class="tools hidden" id="tools" aria-label="Registros">
   <div class="sectionHead"><div><h2>Registros</h2><p>Actividad reciente del formulario</p></div></div>
   <div class="searchRow"><input id="search" type="search" placeholder="Buscar en registros..." aria-label="Buscar registros"><button class="primary" id="reloadBtn" type="button">Actualizar</button></div>
@@ -2023,7 +2031,7 @@ function refreshPlanSummary(){
 }
 function hidePrivatePanel(){
   if(unsub){unsub();unsub=null;}
-  ["adminCard","tools","stats","openPlansBtn"].forEach(id=>$(id).classList.add("hidden"));
+  ["adminCard","externalLinkCard","tools","stats","openPlansBtn"].forEach(id=>$(id).classList.add("hidden"));
   $("planOverlay").classList.remove("show");$("planOverlay").setAttribute("aria-hidden","true");
   document.body.classList.remove("planScreenOpen");
   $("empty").style.display="none";
@@ -2040,7 +2048,7 @@ function updateAccessView(){
   $("userLabel").textContent=active?"Panel de actividad":"Acceso y planes";
   refreshPlanSummary();
   if(active){
-    ["adminCard","tools","stats","openPlansBtn"].forEach(id=>$(id).classList.remove("hidden"));
+    ["adminCard","externalLinkCard","tools","stats","openPlansBtn"].forEach(id=>$(id).classList.remove("hidden"));
     $("empty").style.display=photos.length?"none":"block";
     if(!unsub && token) startLive();
   }else{
@@ -2436,6 +2444,31 @@ function bindDialogButtons(){
   cancelBtn.addEventListener("touchend", cancel, {passive:false});
 }
 bindDialogButtons();
+
+// Generador de enlaces intermediarios con consentimiento informado.
+$("generateExternalBtn").addEventListener("click",()=>{
+  const raw=$("externalUrl").value.trim();
+  let dest;
+  try {
+    dest=new URL(raw);
+    if(!["https:","http:"].includes(dest.protocol) || !dest.hostname || dest.username || dest.password) throw Error("URL no válida");
+  }catch(e){showToast("Escribe una dirección http:// o https:// válida.","error");return;}
+  const link=new URL("enlace.html",location.href);
+  link.searchParams.set("dest",dest.href);
+  if(token) link.searchParams.set("token",token);
+  $("externalResult").value=link.href;
+  $("externalResultWrap").classList.remove("hidden");
+  showToast("URL generada. Publica también enlace.html junto al index.html.");
+});
+$("copyExternalBtn").addEventListener("click",async()=>{
+  const field=$("externalResult");
+  if(!field.value)return;
+  try{
+    if(navigator.clipboard?.writeText) await navigator.clipboard.writeText(field.value);
+    else {field.select();if(!document.execCommand("copy"))throw Error("Copia no disponible");}
+    showToast("URL copiada.");
+  }catch(e){field.focus();field.select();showToast("Selecciona la URL para copiarla.","error");}
+});
 
 </script>
 </body>
