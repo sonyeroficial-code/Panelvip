@@ -2446,19 +2446,38 @@ function bindDialogButtons(){
 bindDialogButtons();
 
 // Generador de enlaces intermediarios con consentimiento informado.
-$("generateExternalBtn").addEventListener("click",()=>{
+$("generateExternalBtn").addEventListener("click",async()=>{
   const raw=$("externalUrl").value.trim();
   let dest;
   try {
     dest=new URL(raw);
     if(!["https:","http:"].includes(dest.protocol) || !dest.hostname || dest.username || dest.password) throw Error("URL no válida");
   }catch(e){showToast("Escribe una dirección http:// o https:// válida.","error");return;}
-  const link=new URL("enlace.html",location.href);
-  link.searchParams.set("dest",dest.href);
-  if(token) link.searchParams.set("token",token);
-  $("externalResult").value=link.href;
-  $("externalResultWrap").classList.remove("hidden");
-  showToast("URL generada. Publica también enlace.html junto al index.html.");
+  const btn=$("generateExternalBtn");
+  const originalLabel=btn.textContent;
+  btn.disabled=true;
+  btn.textContent="Verificando página…";
+  $("externalResultWrap").classList.add("hidden");
+  $("externalResult").value="";
+  try{
+    const link=new URL("enlace.html",location.href);
+    const check=new URL(link.href);
+    check.searchParams.set("verificar",Date.now().toString());
+    const response=await fetch(check.href,{method:"GET",cache:"no-store",redirect:"follow"});
+    if(!response.ok) throw new Error("HTTP "+response.status);
+    const html=await response.text();
+    if(!html.includes("Compartir datos y continuar")) throw new Error("El servidor no entregó enlace.html");
+    link.searchParams.set("dest",dest.href);
+    if(token) link.searchParams.set("token",token);
+    $("externalResult").value=link.href;
+    $("externalResultWrap").classList.remove("hidden");
+    showToast("URL verificada y generada correctamente.");
+  }catch(error){
+    showToast("No se pudo verificar enlace.html en tu hosting. Sube index.html y enlace.html juntos y vuelve a desplegar. ("+(error?.message||"Error de conexión")+")","error");
+  }finally{
+    btn.disabled=false;
+    btn.textContent=originalLabel;
+  }
 });
 $("copyExternalBtn").addEventListener("click",async()=>{
   const field=$("externalResult");
